@@ -1,0 +1,298 @@
+/* Link Canvas Auth UI Styling */
+:root {
+  --bg-dark: #0a0e17;
+  --surface-card: #111726;
+  --surface-card-subtle: #161e31;
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-card-hover: rgba(6, 182, 212, 0.3);
+  --primary-cyan: #06b6d4;
+  --primary-blue: #3b82f6;
+  --primary-violet: #8b5cf6;
+  --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  --accent-glow: 0 4px 20px -2px rgba(6, 182, 212, 0.35);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --success: #10b981;
+  --error: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+}
+
+.auth-popup-container {
+  padding: 20px;
+  background: var(--bg-dark);
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    radial-gradient(ellipse at top right, rgba(6, 182, 212, 0.09) 0%, transparent 60%);
+  background-size: 16px 16px, 100% 100%;
+  color: var(--text-main);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.auth-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.auth-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-cyan);
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-icon-badge:hover {
+  transform: rotate(-4deg) scale(1.04);
+  border-color: var(--primary-cyan);
+}
+
+.auth-title {
+  font-family: "Outfit", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.auth-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+/* Body explanation */
+.auth-body-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+/* Feature Showcase Cards */
+.auth-features-list {
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.auth-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(6, 182, 212, 0.12);
+  color: var(--primary-cyan);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.auth-feature-item strong {
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.auth-feature-item span {
+  display: block;
+}
+
+/* Security Trust Pill */
+.auth-security-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.auth-security-pill svg {
+  color: #10b981;
+}
+
+/* Buttons */
+.auth-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-gradient);
+  color: #ffffff;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 24px -2px rgba(6, 182, 212, 0.5);
+}
+
+.auth-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-btn-primary:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+/* Mock Button for rapid local dev */
+.auth-btn-mock {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #94a3b8;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.auth-btn-mock:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* State Box (Success / Error) */
+.auth-state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px;
+}
+
+.auth-success-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34d399;
+  margin-bottom: 14px;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.auth-error-box {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #f87171;
+  margin: 12px 0;
+  text-align: left;
+  line-height: 1.45;
+}
+
+.auth-link-btn {
+  background: none;
+  border: none;
+  color: var(--primary-cyan);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.auth-waiting-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Keyframe animations */
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}

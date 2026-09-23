@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link Canvas — Trello Power-Up Dev Sandbox</title>
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-color: #080c14;
+        --surface: #0f172a;
+        --surface-card: #141e33;
+        --border: #1e293b;
+        --primary-cyan: #06b6d4;
+        --primary-violet: #8b5cf6;
+        --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+        --text: #f8fafc;
+        --text-subtle: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg-color);
+        background-image: 
+          radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          radial-gradient(ellipse at 80% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+        background-size: 20px 20px, 100% 100%;
+        color: var(--text);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.5;
+      }
+
+      header {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      h1 {
+        font-family: "Outfit", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        background: rgba(6, 182, 212, 0.12);
+        color: var(--primary-cyan);
+        border: 1px solid rgba(6, 182, 212, 0.3);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--surface-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-title {
+        font-family: "Outfit", sans-serif;
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-desc {
+        color: var(--text-subtle);
+        font-size: 13px;
+        margin: 0 0 18px 0;
+      }
+
+      .preview-frame-container {
+        position: relative;
+        background: #0a0e17;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        height: 520px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .quick-link-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .quick-link-btn:hover {
+        border-color: var(--primary-cyan);
+        color: var(--primary-cyan);
+        transform: translateY(-1px);
+      }
+
+      .tab-buttons {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .tab-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-subtle);
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .tab-btn.active {
+        background: var(--primary-cyan);
+        color: #080c14;
+        font-weight: 600;
+        border-color: var(--primary-cyan);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo-group">
+        <img src="./icons/icon.svg" alt="Link Canvas" class="logo-icon" />
+        <h1>Link Canvas</h1>
+        <span class="badge">Trello Power-Up Dev Sandbox</span>
+      </div>
+      <div>
+        <a href="./auth.html" target="_blank" class="quick-link-btn">
+          Open Auth Screen ↗
+        </a>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <!-- Interactive Preview -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div class="card-title">Live Preview</div>
+            <div class="tab-buttons">
+              <button class="tab-btn active" onclick="switchTab('./auth.html', this)">Auth Screen</button>
+              <button class="tab-btn" onclick="switchTab('./settings.html', this)">Settings</button>
+              <button class="tab-btn" onclick="switchTab('./powerup.html', this)">Connector</button>
+            </div>
+          </div>
+          <p class="card-desc">Interactive sandbox rendering the iframe views exactly as Trello loads them.</p>
+
+          <div class="preview-frame-container">
+            <iframe id="preview-frame" src="./auth.html"></iframe>
+          </div>
+        </div>
+
+        <!-- Structure & Endpoints -->
+        <div class="card">
+          <div class="card-title">Power-Up Architecture & Entrypoints</div>
+          <p class="card-desc">All multi-page HTML and script endpoints registered for Trello Power-Up capabilities:</p>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+            <div style="padding: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--border);">
+              <strong style="color: var(--primary-cyan);">🔗 /auth.html</strong>
+              <div style="color: var(--text-subtle); margin-top: 4px; font-size: 12px;">
+                The redesigned Link Canvas authorization screen. Handles popup OAuth, origin security checks, and member-scoped token persistence.
+              </div>
+            </div>
+
+            <div style="padding: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--border);">
+              <strong style="color: #a78bfa;">⚡ /authorized.html</strong>
+              <div style="color: var(--text-subtle); margin-top: 4px; font-size: 12px;">
+                Trello OAuth return page. Receives <code>#token=...</code> and posts it safely back to the opener via <code>link-canvas-auth</code> postMessage.
+              </div>
+            </div>
+
+            <div style="padding: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--border);">
+              <strong style="color: #38bdf8;">⚙️ /settings.html</strong>
+              <div style="color: var(--text-subtle); margin-top: 4px; font-size: 12px;">
+                Displays the currently authenticated Trello member profile and allows token disconnect / re-authorization.
+              </div>
+            </div>
+
+            <div style="padding: 12px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid var(--border);">
+              <strong style="color: #34d399;">🔌 /powerup.html</strong>
+              <div style="color: var(--text-subtle); margin-top: 4px; font-size: 12px;">
+                The main Power-Up connector script initializing capabilities: <code>authorization-status</code>, <code>show-authorization</code>, <code>show-settings</code>, <code>board-buttons</code>, <code>card-buttons</code>, and <code>card-badges</code>.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <div class="card-title" style="font-size: 15px;">Direct Links</div>
+            <div class="quick-links">
+              <a href="./auth.html" target="_blank" class="quick-link-btn">auth.html ↗</a>
+              <a href="./settings.html" target="_blank" class="quick-link-btn">settings.html ↗</a>
+              <a href="./powerup.html" target="_blank" class="quick-link-btn">powerup.html ↗</a>
+              <a href="./authorized.html" target="_blank" class="quick-link-btn">authorized.html ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function switchTab(url, btn) {
+        document.getElementById('preview-frame').src = url;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    </script>
+  </body>
+</html>
