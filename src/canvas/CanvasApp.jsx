@@ -2,6 +2,89 @@ import React, { useState } from "react";
 import "./canvas.css";
 
 // =========================================================================
+// PHASE 2 ICONS (Lucide 14px in 20px chips with 6px radius)
+// =========================================================================
+const AlertTriangle = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/>
+    <line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
+
+const Lightbulb = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+    <path d="M9 18h6"/>
+    <path d="M10 22h4"/>
+  </svg>
+);
+
+const BarChart3 = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 3v18h18"/>
+    <path d="M18 17V9"/>
+    <path d="M13 17V5"/>
+    <path d="M8 17v-3"/>
+  </svg>
+);
+
+const Gift = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="20 12 20 22 4 22 4 12"/>
+    <rect width="20" height="5" x="2" y="7" rx="1"/>
+    <line x1="12" y1="22" x2="12" y2="7"/>
+    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+  </svg>
+);
+
+const Shield = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+  </svg>
+);
+
+const Route = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="6" cy="19" r="3"/>
+    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/>
+    <circle cx="18" cy="5" r="3"/>
+  </svg>
+);
+
+const Users = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+    <circle cx="9" cy="7" r="4"/>
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+const Tag = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+    <path d="M7 7h.01"/>
+  </svg>
+);
+
+const Banknote = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect width="20" height="12" x="2" y="6" rx="2"/>
+    <circle cx="12" cy="12" r="2"/>
+    <path d="M6 12h.01M18 12h.01"/>
+  </svg>
+);
+
+const IconX = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 6 6 18"/>
+    <path d="m6 6 12 12"/>
+  </svg>
+);
+
+// =========================================================================
 // PRESET STARTUP DATA (ASH MAURYA LEAN CANVAS)
 // =========================================================================
 const PRESET_IDEAS = {
@@ -170,6 +253,8 @@ export default function CanvasApp({ t }) {
   const [activeTab, setActiveTab] = useState("ai"); // "ai" or "cards"
   const [activeChipKey, setActiveChipKey] = useState("hyperlocal");
   const [ideaPrompt, setIdeaPrompt] = useState(PRESET_IDEAS.hyperlocal.text);
+  const [promptError, setPromptError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [activeCanvas, setActiveCanvas] = useState(PRESET_IDEAS.hyperlocal);
   const [boardCards, setBoardCards] = useState(INITIAL_BOARD_CARDS);
@@ -185,19 +270,31 @@ export default function CanvasApp({ t }) {
   function handleSelectChip(item) {
     setActiveChipKey(item.key);
     setIdeaPrompt(item.text);
+    if (promptError) setPromptError("");
     setActiveCanvas(PRESET_IDEAS[item.key]);
   }
 
   function handleGenerateCanvas() {
-    setIsGenerated(true);
-    if (PRESET_IDEAS[activeChipKey]) {
-      setActiveCanvas(PRESET_IDEAS[activeChipKey]);
+    if (!ideaPrompt.trim()) {
+      setPromptError("Describe your idea first");
+      return;
     }
-    showToast("✨ Generated 9-box Lean Canvas!");
+    setPromptError("");
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setIsGenerated(true);
+      if (PRESET_IDEAS[activeChipKey]) {
+        setActiveCanvas(PRESET_IDEAS[activeChipKey]);
+      }
+      showToast("✨ Generated 9-box Lean Canvas!");
+    }, 600);
   }
 
   function handleReset() {
     setIsGenerated(false);
+    setIsLoading(false);
+    setPromptError("");
     setBoardCards([
       { id: "c1", title: "Database schema update", box: "Problem" },
       { id: "c2", title: "Fix login bug", box: null },
@@ -261,10 +358,8 @@ export default function CanvasApp({ t }) {
       {/* Top Header */}
       <div className="lc-exact-header">
         <div className="header-left-title">
-          <div className="header-brand-logo"><i className="ti ti-layout-grid" aria-hidden="true"></i></div>
-          <span className="header-main-title">Link Canvas</span>
           <span className={`header-status-pill ${isGenerated ? "ready" : ""}`}>
-            {isGenerated ? "9 of 9 ready" : "Empty canvas"}
+            {isLoading ? "Generating..." : isGenerated ? "9 of 9 ready" : "Empty canvas"}
           </span>
         </div>
 
@@ -275,8 +370,8 @@ export default function CanvasApp({ t }) {
           <button className="btn-header-attach" onClick={handleAttach}>
             <i className="ti ti-paperclip" aria-hidden="true"></i>Attach
           </button>
-          <button className="btn-header-more" title="Options" onClick={() => showToast("Link Canvas 2.0")}>
-            <i className="ti ti-dots" aria-hidden="true"></i>
+          <button className="btn-header-more" aria-label="Close" title="Close" onClick={() => showToast("Link Canvas 2.0")}>
+            <IconX size={14} />
           </button>
         </div>
       </div>
@@ -304,13 +399,19 @@ export default function CanvasApp({ t }) {
           {/* AI Draft Tab Content */}
           {activeTab === "ai" ? (
             <div className="tab-ai-draft-content">
-              <div className="ai-draft-textarea-box">
+              <div className={`ai-draft-textarea-box ${promptError ? "has-error" : ""}`}>
                 <textarea
                   value={ideaPrompt}
-                  onChange={(e) => setIdeaPrompt(e.target.value)}
+                  onChange={(e) => {
+                    setIdeaPrompt(e.target.value);
+                    if (promptError) setPromptError("");
+                  }}
                   placeholder="Describe your startup or product idea"
                   rows={4}
                 />
+                {promptError && (
+                  <div className="ai-prompt-error-msg">{promptError}</div>
+                )}
               </div>
 
               <div className="ai-draft-chips-col">
@@ -326,7 +427,7 @@ export default function CanvasApp({ t }) {
               </div>
 
               <button className="btn-generate-canvas-exact" onClick={handleGenerateCanvas}>
-                <i className="ti ti-sparkles" aria-hidden="true"></i>Generate canvas
+                <i className="ti ti-sparkles" aria-hidden="true"></i>{isLoading ? "Generating..." : "Generate canvas"}
               </button>
             </div>
           ) : (
@@ -373,13 +474,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Problem")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-red">
-                <i className="ti ti-alert-triangle" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-problem">
+                <AlertTriangle size={14} />
               </div>
               <span>Problem</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "85%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.problem.map((b, i) => (
@@ -394,8 +501,8 @@ export default function CanvasApp({ t }) {
             {/* Dropped / Linked Cards Pill */}
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Problem").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -409,13 +516,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Solution")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-green">
-                <i className="ti ti-bulb" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-solution">
+                <Lightbulb size={14} />
               </div>
               <span>Solution</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "80%" }}></div>
+                <div className="skeleton-bar" style={{ width: "60%" }}></div>
+                <div className="skeleton-bar" style={{ width: "70%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.solution.map((b, i) => (
@@ -429,8 +542,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Solution").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -444,13 +557,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Key metrics")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-blue">
-                <i className="ti ti-chart-bar" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-metrics">
+                <BarChart3 size={14} />
               </div>
               <span>Key metrics</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+                <div className="skeleton-bar" style={{ width: "55%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.keyMetrics.map((b, i) => (
@@ -464,8 +583,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Key metrics").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -479,15 +598,23 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Value proposition")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-purple">
-                <i className="ti ti-gift" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-uvp">
+                <Gift size={14} />
               </div>
               <span>Value proposition</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "90%" }}></div>
+                <div className="skeleton-bar" style={{ width: "70%" }}></div>
+                <div className="skeleton-bar" style={{ width: "80%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
-                <p style={{ fontWeight: 600, color: "#ffffff" }}>{activeCanvas.uvp}</p>
+                <ul>
+                  <li>{activeCanvas.uvp}</li>
+                </ul>
               </div>
             ) : (
               <p className="box-item-subtext">Clear, compelling message</p>
@@ -495,8 +622,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Value proposition").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -510,15 +637,23 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Unfair advantage")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-rose">
-                <i className="ti ti-shield" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-advantage">
+                <Shield size={14} />
               </div>
               <span>Unfair advantage</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "85%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
-                <p>{activeCanvas.unfairAdvantage}</p>
+                <ul>
+                  <li>{activeCanvas.unfairAdvantage}</li>
+                </ul>
               </div>
             ) : (
               <p className="box-item-subtext">Cannot be copied</p>
@@ -526,8 +661,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Unfair advantage").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -541,13 +676,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Channels")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-orange">
-                <i className="ti ti-git-fork" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-channels">
+                <Route size={14} />
               </div>
               <span>Channels</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "80%" }}></div>
+                <div className="skeleton-bar" style={{ width: "60%" }}></div>
+                <div className="skeleton-bar" style={{ width: "70%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.channels.map((b, i) => (
@@ -561,8 +702,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Channels").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -576,13 +717,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Customers")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-teal">
-                <i className="ti ti-users" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-customers">
+                <Users size={14} />
               </div>
               <span>Customers</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "85%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.customerSegments.map((b, i) => (
@@ -596,8 +743,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Customers").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -611,13 +758,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Cost structure")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-amber">
-                <i className="ti ti-tag" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-cost">
+                <Tag size={14} />
               </div>
               <span>Cost structure</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "85%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.costStructure.map((b, i) => (
@@ -631,8 +784,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Cost structure").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
@@ -646,13 +799,19 @@ export default function CanvasApp({ t }) {
             onDrop={(e) => handleDrop(e, "Revenue streams")}
           >
             <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-green">
-                <i className="ti ti-cash" aria-hidden="true"></i>
+              <div className="box-icon-badge icon-badge-revenue">
+                <Banknote size={14} />
               </div>
               <span>Revenue streams</span>
             </div>
 
-            {isGenerated ? (
+            {isLoading ? (
+              <div className="box-skeleton-bars">
+                <div className="skeleton-bar" style={{ width: "85%" }}></div>
+                <div className="skeleton-bar" style={{ width: "65%" }}></div>
+                <div className="skeleton-bar" style={{ width: "75%" }}></div>
+              </div>
+            ) : isGenerated ? (
               <div className="box-item-bullets">
                 <ul>
                   {activeCanvas.revenueStreams.map((b, i) => (
@@ -666,8 +825,8 @@ export default function CanvasApp({ t }) {
 
             <div className="box-dropped-cards">
               {boardCards.filter(c => c.box === "Revenue streams").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill">
-                  {c.title.length > 12 ? c.title.slice(0, 10) + "..." : c.title}
+                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                  {c.title}
                 </span>
               ))}
             </div>
