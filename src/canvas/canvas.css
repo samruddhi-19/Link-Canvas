@@ -240,6 +240,13 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.schematic-blueprint-card:hover {
+  border-color: rgba(133, 70, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .schematic-grid {
@@ -385,6 +392,242 @@
   color: #94a3b8;
   margin: 0;
 }
+/* ==========================================================================
+   View 2: Populated 9-Box Draft Canvas Styles
+   ========================================================================== */
+.btn-back-prompt {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #1f2530;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #c7d1db;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-back-prompt:hover {
+  background: #2a3342;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.status-badge-green {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(75, 206, 151, 0.15);
+  color: #4bce97;
+  border: 1px solid rgba(75, 206, 151, 0.3);
+}
+
+.header-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-header-secondary {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #1c2128;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #c7d1db;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-header-secondary:hover {
+  background: #262c36;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-header-primary {
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
+  transition: all 0.15s ease;
+}
+
+.btn-header-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.draft-grid-body {
+  padding: 14px 20px 16px;
+}
+
+.populated-9box-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.populated-box-card {
+  background: #181d24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 155px;
+  transition: all 0.2s ease;
+}
+
+.populated-box-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Category Accent Borders */
+.box-theme-problem { border-top: 3px solid #f43f5e; }
+.box-theme-segments { border-top: 3px solid #a855f7; }
+.box-theme-uvp { border-top: 3px solid #38bdf8; }
+.box-theme-solution { border-top: 3px solid #06b6d4; }
+.box-theme-channels { border-top: 3px solid #818cf8; }
+.box-theme-revenue { border-top: 3px solid #10b981; }
+.box-theme-cost { border-top: 3px solid #f59e0b; }
+.box-theme-metrics { border-top: 3px solid #14b8a6; }
+.box-theme-advantage { border-top: 3px solid #c084fc; }
+
+.pop-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pop-box-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.box-theme-problem .pop-box-title { color: #f43f5e; }
+.box-theme-segments .pop-box-title { color: #c084fc; }
+.box-theme-uvp .pop-box-title { color: #38bdf8; }
+.box-theme-solution .pop-box-title { color: #22d3ee; }
+.box-theme-channels .pop-box-title { color: #a5b4fc; }
+.box-theme-revenue .pop-box-title { color: #34d399; }
+.box-theme-cost .pop-box-title { color: #fbbf24; }
+.box-theme-metrics .pop-box-title { color: #2dd4bf; }
+.box-theme-advantage .pop-box-title { color: #e879f9; }
+
+.pop-box-tag {
+  font-size: 9.5px;
+  color: #738496;
+  font-weight: 500;
+}
+
+.pop-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11.5px;
+  color: #cbd5e1;
+  line-height: 1.45;
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+.pop-bullet-item {
+  position: relative;
+  padding-left: 13px;
+}
+
+.pop-bullet-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.box-theme-problem .pop-bullet-item::before { color: #f43f5e; }
+.box-theme-segments .pop-bullet-item::before { color: #a855f7; }
+.box-theme-uvp .pop-bullet-item::before { color: #38bdf8; }
+.box-theme-solution .pop-bullet-item::before { color: #06b6d4; }
+.box-theme-channels .pop-bullet-item::before { color: #818cf8; }
+.box-theme-revenue .pop-bullet-item::before { color: #10b981; }
+.box-theme-cost .pop-bullet-item::before { color: #f59e0b; }
+.box-theme-metrics .pop-bullet-item::before { color: #14b8a6; }
+.box-theme-advantage .pop-bullet-item::before { color: #c084fc; }
+
+/* Populated Sub Callout */
+.pop-sub-callout {
+  margin-top: auto;
+  padding: 7px 9px;
+  background: #11151c;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  font-size: 10.5px;
+}
+
+.pop-sub-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.pop-sub-text {
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+.btn-card-insert-action {
+  margin-top: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: #0284c7;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.btn-card-insert-action:hover {
+  background: #0369a1;
+}
+
 /* Footer - Pinned at bottom */
 .canvas-modal-footer {
   padding: 8px 20px;
