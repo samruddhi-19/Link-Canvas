@@ -1,9 +1,11 @@
 /* ==========================================================================
-   Link Canvas - Concept 1 (9-Box Blueprint Schematic UI)
+   Link Canvas — Dark Theme & 5-Column Horizontal Lean Canvas System
    ========================================================================== */
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .canvas-wrapper {
@@ -18,9 +20,26 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* Header - Pinned at top */
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   Modal Header - Pinned Top
+   ========================================================================== */
 .canvas-modal-header {
-  padding: 12px 20px;
+  padding: 10px 18px;
   background: #161b22;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
@@ -37,9 +56,9 @@
 }
 
 .brand-logo-badge {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
   background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
   display: flex;
   align-items: center;
@@ -52,19 +71,18 @@
 .brand-title-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .brand-name {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
-  margin: 0;
   letter-spacing: -0.2px;
   color: #f7f8f9;
 }
 
 .brand-pill {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 9999px;
@@ -74,17 +92,107 @@
   letter-spacing: 0.2px;
 }
 
-/* Body Container - Internal Scroll Area */
+.btn-back-compact {
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: #1f2530;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #c7d1db;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-back-compact:hover {
+  background: #2a3342;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.canvas-title-pill-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-idea-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #f7f8f9;
+  letter-spacing: -0.2px;
+}
+
+.status-badge-live {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(75, 206, 151, 0.15);
+  color: #4bce97;
+  border: 1px solid rgba(75, 206, 151, 0.3);
+}
+
+.header-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-header-secondary {
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #1c2128;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #c7d1db;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.btn-header-secondary:hover {
+  background: #262c36;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-header-primary {
+  padding: 5px 14px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
+  transition: all 0.15s ease;
+}
+
+.btn-header-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Body Container - Scrollable Internal Area
+   ========================================================================== */
 .canvas-modal-body {
   flex: 1;
   overflow-y: auto;
-  padding: 14px 20px 16px;
-  max-width: 980px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
@@ -97,26 +205,36 @@
   border-radius: 9999px;
 }
 
-/* Main AI Hero Card */
+/* Initial Screen Body */
+.initial-body {
+  padding: 14px 20px 16px;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* AI Hero Card */
 .ai-hero-card {
   background: #181d24;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 18px 22px;
+  padding: 16px 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  position: relative;
 }
 
 .card-top-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
+  gap: 5px;
+  font-size: 10.5px;
   font-weight: 600;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .sparkle-icon {
@@ -124,33 +242,33 @@
 }
 
 .hero-main-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: #ffffff;
   margin: 0 0 2px 0;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
 }
 
 .hero-subtext {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #94a3b8;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   line-height: 1.4;
 }
 
 /* Prompt Input */
 .prompt-input-wrapper {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .prompt-textarea {
   width: 100%;
-  height: 58px;
-  padding: 10px 14px;
-  border-radius: 8px;
+  height: 52px;
+  padding: 8px 12px;
+  border-radius: 7px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   color: #f7f8f9;
   background: #0f1217;
   resize: none;
@@ -165,14 +283,14 @@
   background: #12161d;
 }
 
-/* Idea Starters + CTA Row */
+/* Prompt Controls Row */
 .prompt-controls-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .chips-container {
@@ -183,12 +301,12 @@
 }
 
 .chip-pill {
-  padding: 4px 11px;
+  padding: 4px 10px;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: #1f2530;
   color: #c7d1db;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -204,14 +322,14 @@
 .btn-generate-primary {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
-  border-radius: 7px;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
   border: none;
   background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
   color: #ffffff;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 12px rgba(133, 70, 255, 0.4);
@@ -222,24 +340,21 @@
 .btn-generate-primary:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(133, 70, 255, 0.55);
 }
 
 .btn-sparkle {
-  font-size: 14px;
+  font-size: 13px;
 }
 
-/* ==========================================================================
-   9-Box Blueprint Schematic Diagram
-   ========================================================================== */
+/* Schematic Blueprint */
 .schematic-blueprint-card {
   background: #11151c;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 8px;
-  padding: 10px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -252,31 +367,25 @@
 .schematic-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  min-height: 110px;
+  gap: 5px;
+  min-height: 95px;
 }
 
 .blueprint-col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .blueprint-box {
   background: #181e28;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  padding: 7px 9px;
+  border-radius: 5px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   flex: 1;
-  transition: all 0.2s ease;
-}
-
-.blueprint-box:hover {
-  border-color: rgba(87, 157, 255, 0.3);
-  background: #1e2634;
 }
 
 .blueprint-box.highlight-center {
@@ -289,42 +398,40 @@
 }
 
 .box-title {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #e2e8f0;
   margin-bottom: 2px;
 }
 
 .box-hint {
-  font-size: 9.5px;
+  font-size: 8.5px;
   color: #738496;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .schematic-bottom-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  min-height: 48px;
+  gap: 5px;
+  min-height: 42px;
 }
 
-/* ==========================================================================
-   Bottom Action Trays
-   ========================================================================== */
+/* Bottom Trays */
 .bottom-trays-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .tray-card {
   background: #181d24;
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 10px;
-  padding: 12px 16px;
+  border-radius: 8px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -336,9 +443,9 @@
 }
 
 .tray-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
   background: #11151c;
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
@@ -356,11 +463,10 @@
 }
 
 .company-badge {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  padding: 3px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
-  letter-spacing: -0.2px;
 }
 
 .company-badge.uber {
@@ -377,266 +483,220 @@
 .company-badge.airbnb {
   background: #ff5a5f;
   color: #ffffff;
-  font-size: 9px;
+  font-size: 8.5px;
 }
 
 .tray-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #f7f8f9;
-  margin: 0 0 2px 0;
+  margin: 0 0 1px 0;
 }
 
 .tray-desc {
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: #94a3b8;
   margin: 0;
 }
+
 /* ==========================================================================
-   View 2: Populated 9-Box Draft Canvas Styles
+   VIEW 2: Full Horizontal 5-Column Ash Maurya Lean Canvas Board
    ========================================================================== */
-.btn-back-prompt {
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #1f2530;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #c7d1db;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.btn-back-prompt:hover {
-  background: #2a3342;
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.status-badge-green {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  background: rgba(75, 206, 151, 0.15);
-  color: #4bce97;
-  border: 1px solid rgba(75, 206, 151, 0.3);
-}
-
-.header-actions-right {
+.horizontal-body {
+  padding: 12px 16px 14px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
-}
-
-.btn-header-secondary {
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: #1c2128;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #c7d1db;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s ease;
-}
-
-.btn-header-secondary:hover {
-  background: #262c36;
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.btn-header-primary {
-  padding: 6px 14px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
-  border: none;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
-  transition: all 0.15s ease;
-}
-
-.btn-header-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.draft-grid-body {
-  padding: 14px 20px 16px;
-}
-
-.populated-9box-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
   width: 100%;
 }
 
-.populated-box-card {
+.lean-canvas-horizontal-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.lean-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* Lean Box Cards */
+.lean-box-card {
   background: #181d24;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 9px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 10px 11px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 155px;
+  min-height: 130px;
   transition: all 0.2s ease;
 }
 
-.populated-box-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+.lean-box-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-/* Category Accent Borders */
-.box-theme-problem { border-top: 3px solid #f43f5e; }
-.box-theme-segments { border-top: 3px solid #a855f7; }
-.box-theme-uvp { border-top: 3px solid #38bdf8; }
-.box-theme-solution { border-top: 3px solid #06b6d4; }
-.box-theme-channels { border-top: 3px solid #818cf8; }
-.box-theme-revenue { border-top: 3px solid #10b981; }
-.box-theme-cost { border-top: 3px solid #f59e0b; }
-.box-theme-metrics { border-top: 3px solid #14b8a6; }
-.box-theme-advantage { border-top: 3px solid #c084fc; }
+.center-hero-box {
+  background: #191e27;
+  border-color: rgba(56, 189, 248, 0.25);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
+}
 
-.pop-box-header {
+/* Accent Borders */
+.box-problem { border-top: 3px solid #f43f5e; }
+.box-segments { border-top: 3px solid #a855f7; }
+.box-uvp { border-top: 3px solid #38bdf8; }
+.box-solution { border-top: 3px solid #06b6d4; }
+.box-channels { border-top: 3px solid #818cf8; }
+.box-revenue { border-top: 3px solid #10b981; }
+.box-cost { border-top: 3px solid #f59e0b; }
+.box-metrics { border-top: 3px solid #14b8a6; }
+.box-advantage { border-top: 3px solid #c084fc; }
+
+.box-top-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-.pop-box-title {
-  font-size: 11.5px;
+.box-heading-title {
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   text-transform: uppercase;
 }
 
-.box-theme-problem .pop-box-title { color: #f43f5e; }
-.box-theme-segments .pop-box-title { color: #c084fc; }
-.box-theme-uvp .pop-box-title { color: #38bdf8; }
-.box-theme-solution .pop-box-title { color: #22d3ee; }
-.box-theme-channels .pop-box-title { color: #a5b4fc; }
-.box-theme-revenue .pop-box-title { color: #34d399; }
-.box-theme-cost .pop-box-title { color: #fbbf24; }
-.box-theme-metrics .pop-box-title { color: #2dd4bf; }
-.box-theme-advantage .pop-box-title { color: #e879f9; }
+.box-problem .box-heading-title { color: #f43f5e; }
+.box-segments .box-heading-title { color: #c084fc; }
+.box-uvp .box-heading-title { color: #38bdf8; }
+.box-solution .box-heading-title { color: #22d3ee; }
+.box-channels .box-heading-title { color: #a5b4fc; }
+.box-revenue .box-heading-title { color: #34d399; }
+.box-cost .box-heading-title { color: #fbbf24; }
+.box-metrics .box-heading-title { color: #2dd4bf; }
+.box-advantage .box-heading-title { color: #e879f9; }
 
-.pop-box-tag {
-  font-size: 9.5px;
+.box-badge-tag {
+  font-size: 8.5px;
   color: #738496;
   font-weight: 500;
 }
 
-.pop-bullet-list {
+.box-bullets-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 11.5px;
+  gap: 4px;
+  font-size: 10.5px;
   color: #cbd5e1;
-  line-height: 1.45;
-  margin: 0 0 10px 0;
-  padding: 0;
+  line-height: 1.38;
+  margin-bottom: 8px;
 }
 
-.pop-bullet-item {
+.box-bullets-list li {
   position: relative;
-  padding-left: 13px;
+  padding-left: 11px;
 }
 
-.pop-bullet-item::before {
+.box-bullets-list li::before {
   content: "•";
   position: absolute;
   left: 0;
   font-weight: bold;
 }
 
-.box-theme-problem .pop-bullet-item::before { color: #f43f5e; }
-.box-theme-segments .pop-bullet-item::before { color: #a855f7; }
-.box-theme-uvp .pop-bullet-item::before { color: #38bdf8; }
-.box-theme-solution .pop-bullet-item::before { color: #06b6d4; }
-.box-theme-channels .pop-bullet-item::before { color: #818cf8; }
-.box-theme-revenue .pop-bullet-item::before { color: #10b981; }
-.box-theme-cost .pop-bullet-item::before { color: #f59e0b; }
-.box-theme-metrics .pop-bullet-item::before { color: #14b8a6; }
-.box-theme-advantage .pop-bullet-item::before { color: #c084fc; }
+.box-problem .box-bullets-list li::before { color: #f43f5e; }
+.box-segments .box-bullets-list li::before { color: #a855f7; }
+.box-uvp .box-bullets-list li::before { color: #38bdf8; }
+.box-solution .box-bullets-list li::before { color: #06b6d4; }
+.box-channels .box-bullets-list li::before { color: #818cf8; }
+.box-revenue .box-bullets-list li::before { color: #10b981; }
+.box-cost .box-bullets-list li::before { color: #f59e0b; }
+.box-metrics .box-bullets-list li::before { color: #14b8a6; }
+.box-advantage .box-bullets-list li::before { color: #c084fc; }
 
-/* Populated Sub Callout */
-.pop-sub-callout {
+/* Sub Framework Callout (Existing Alternatives, High-Level Concept, Early Adopters) */
+.sub-framework-callout {
   margin-top: auto;
-  padding: 7px 9px;
+  margin-bottom: 6px;
+  padding: 5px 7px;
   background: #11151c;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  font-size: 10.5px;
+  border-radius: 5px;
+  font-size: 9.5px;
 }
 
-.pop-sub-label {
-  font-size: 9px;
+.sub-framework-label {
+  font-size: 8px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   color: #94a3b8;
   margin-bottom: 2px;
   display: block;
 }
 
-.pop-sub-text {
+.sub-framework-text {
   color: #94a3b8;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
-.btn-card-insert-action {
-  margin-top: 8px;
+.btn-card-push {
+  margin-top: auto;
   width: 100%;
-  padding: 6px 8px;
-  border-radius: 5px;
-  background: #0284c7;
-  border: none;
-  color: #ffffff;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: #1f2530;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   transition: all 0.15s ease;
 }
 
-.btn-card-insert-action:hover {
-  background: #0369a1;
+.btn-card-push:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
 }
 
-/* Footer - Pinned at bottom */
+/* Bottom Horizontal Span: Cost Structure + Revenue Streams */
+.lean-canvas-horizontal-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Footer - Pinned Bottom
+   ========================================================================== */
 .canvas-modal-footer {
-  padding: 8px 20px;
+  padding: 7px 18px;
   background: #161b22;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 10.5px;
   color: #738496;
   flex-shrink: 0;
   z-index: 10;
