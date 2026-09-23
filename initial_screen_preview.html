@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link Canvas - Initial Screen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #0f1215;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        color: #f7f8f9;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Modal Window matching User Persona fullscreen modal */
+      .modal-card {
+        background: #1d2125;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 960px;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Header */
+      .modal-header {
+        padding: 20px 28px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: #181d22;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, rgba(133, 70, 255, 0.25) 0%, rgba(87, 157, 255, 0.25) 100%);
+        border: 1px solid rgba(133, 70, 255, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #a78bfa;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .header-titles h2 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #f7f8f9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.2px;
+      }
+
+      .header-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+      }
+
+      .header-subtitle {
+        font-size: 13px;
+        color: #9fadbc;
+        margin-top: 3px;
+      }
+
+      .close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: #22272b;
+        color: #9fadbc;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .close-btn:hover {
+        background: #2c333a;
+        color: #ffffff;
+      }
+
+      /* Body */
+      .modal-body {
+        padding: 28px;
+        background: #1d2125;
+      }
+
+      /* Hero Input Card */
+      .ai-hero-card {
+        background: #22272b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        background: rgba(75, 206, 151, 0.15);
+        border: 1px solid rgba(75, 206, 151, 0.3);
+        color: #4bce97;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      .input-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #f7f8f9;
+        margin-bottom: 4px;
+      }
+
+      .input-desc {
+        font-size: 13px;
+        color: #9fadbc;
+        margin-bottom: 16px;
+        line-height: 1.45;
+      }
+
+      .prompt-box-wrapper {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .prompt-textarea {
+        width: 100%;
+        height: 85px;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        font-family: inherit;
+        font-size: 13px;
+        color: #f7f8f9;
+        background: #161a1d;
+        resize: none;
+        outline: none;
+        transition: all 0.2s ease;
+        line-height: 1.5;
+      }
+
+      .prompt-textarea:focus {
+        border-color: #579dff;
+        box-shadow: 0 0 0 2px rgba(87, 157, 255, 0.25);
+      }
+
+      /* Quick Suggestion Chips */
+      .chips-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .chips-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #9fadbc;
+        margin-right: 4px;
+      }
+
+      .chip-btn {
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #282e33;
+        color: #c7d1db;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .chip-btn:hover {
+        border-color: #579dff;
+        color: #ffffff;
+        background: #333c44;
+      }
+
+      /* Actions Bar */
+      .card-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* Matching User Persona 'Draft with AI' button gradient */
+      .btn-generate {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 6px;
+        border: none;
+        background: linear-gradient(135deg, #8546ff 0%, #579dff 100%);
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
+        transition: all 0.15s ease;
+      }
+
+      .btn-generate:hover {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(133, 70, 255, 0.45);
+      }
+
+      .btn-preview-link {
+        font-size: 12px;
+        color: #9fadbc;
+      }
+
+      /* Alternative Options Row */
+      .alternatives-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .alt-card {
+        background: #22272b;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .alt-card:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: #282e33;
+        transform: translateY(-1px);
+      }
+
+      .alt-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .alt-icon.blank {
+        background: rgba(255, 255, 255, 0.08);
+        color: #9fadbc;
+      }
+
+      .alt-icon.template {
+        background: rgba(87, 157, 255, 0.15);
+        color: #579dff;
+      }
+
+      .alt-text h4 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #f7f8f9;
+        margin-bottom: 2px;
+      }
+
+      .alt-text p {
+        font-size: 12px;
+        color: #9fadbc;
+      }
+
+      /* Footer */
+      .modal-footer {
+        padding: 14px 28px;
+        background: #181d22;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #738496;
+      }
+
+      .footer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #9fadbc;
+      }
+
+      .footer-badge span.dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #4bce97;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="modal-card">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="header-left">
+          <div class="icon-box">✨</div>
+          <div class="header-titles">
+            <h2>
+              Feature #1: Smart Canvas Creation
+              <span class="header-badge">9-Box First Draft</span>
+            </h2>
+            <p class="header-subtitle">Instead of staring at 9 empty boxes, get an actionable first draft.</p>
+          </div>
+        </div>
+        <button class="close-btn" title="Close">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- AI Hero Prompt Card -->
+        <div class="ai-hero-card">
+          <div class="card-eyebrow">
+            ⚡ Quick-Start With AI
+          </div>
+
+          <h3 class="input-label">What are you building?</h3>
+          <p class="input-desc">Describe your product idea or service in a sentence or two. AI will draft all 9 Lean Canvas boxes for you.</p>
+
+          <div class="prompt-box-wrapper">
+            <textarea
+              class="prompt-textarea"
+              placeholder="e.g. An instant flavored sattu drink for busy people..."
+            >An instant flavored sattu drink for busy urban professionals who need quick morning plant nutrition.</textarea>
+          </div>
+
+          <div class="chips-row">
+            <span class="chips-label">Try ideas:</span>
+            <button class="chip-btn">☕ D2C Sattu / Food Brand</button>
+            <button class="chip-btn">💻 AI Notion for Lawyers</button>
+            <button class="chip-btn">🛍️ Hyperlocal Dark Store</button>
+            <button class="chip-btn">🚗 Mobile Pet Grooming</button>
+          </div>
+
+          <div class="card-actions">
+            <span class="btn-preview-link">
+              💡 Drafts Problem, Customer Segments, Value Prop & 6 more boxes
+            </span>
+
+            <button class="btn-generate">
+              <span>✨</span>
+              <span>Generate 9-Box First Draft</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Alternative Ways to Start -->
+        <div class="alternatives-container">
+          <div class="alt-card">
+            <div class="alt-icon blank">📋</div>
+            <div class="alt-text">
+              <h4>Start with Blank 9-Box Canvas</h4>
+              <p>Prefer writing yourself? Open clean empty grid.</p>
+            </div>
+          </div>
+
+          <div class="alt-card">
+            <div class="alt-icon template">📁</div>
+            <div class="alt-text">
+              <h4>Explore Pre-built Examples</h4>
+              <p>Load Uber, Airbnb, or Stripe business model.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="footer-badge">
+          <span class="dot"></span>
+          <span>Link Canvas 2.0 • Ash Maurya Framework</span>
+        </div>
+        <div>
+          <span>Press ESC or click Cancel to return to board</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -50,11 +50,12 @@ TrelloPowerUp.initialize({
             });
           }
 
-          // Open the canvas modal or notice
-          return t.popup({
+          // User is already authorized -> directly open the power-up canvas modal
+          return t.modal({
+            url: "./canvas.html",
+            accentColor: "#8546ff",
+            fullscreen: true,
             title: "Link Canvas",
-            url: "./settings.html",
-            height: 280,
           });
         },
       },
@@ -76,10 +77,13 @@ TrelloPowerUp.initialize({
               height: 320,
             });
           }
-          return t.popup({
-            title: "Card Connections",
-            url: "./settings.html",
-            height: 280,
+
+          // User is authorized -> directly open the power-up canvas modal
+          return t.modal({
+            url: "./canvas.html",
+            accentColor: "#8546ff",
+            fullscreen: true,
+            title: "Link Canvas",
           });
         },
       },

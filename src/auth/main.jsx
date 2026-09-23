@@ -29,7 +29,12 @@ if (!t) {
     sizeTo: () => Promise.resolve(),
     closePopup: () => {
       console.log("[Mock] t.closePopup() called");
-      alert("Auth completed! In Trello, this popup closes and refreshes board capabilities.");
+    },
+    modal: (opts) => {
+      console.log("[Mock] t.modal() called with opts:", opts);
+      if (opts && opts.url) {
+        window.open(opts.url, "_blank");
+      }
     },
   };
 }

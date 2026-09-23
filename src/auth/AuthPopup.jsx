@@ -78,6 +78,20 @@ export default function AuthPopup({ t }) {
     }
   }
 
+  function handleOpenCanvas() {
+    if (t && typeof t.modal === "function") {
+      t.modal({
+        url: "./canvas.html",
+        accentColor: "#8546ff",
+        fullscreen: true,
+        title: "Link Canvas",
+      });
+    }
+    if (t && typeof t.closePopup === "function") {
+      t.closePopup();
+    }
+  }
+
   if (status === "success") {
     return (
       <div className="auth-popup-container auth-state-box">
@@ -85,19 +99,15 @@ export default function AuthPopup({ t }) {
           <CheckIcon width={26} height={26} />
         </div>
         <h3 className="auth-title">Connected to {APP_NAME}</h3>
-        <p className="auth-subtitle" style={{ marginBottom: "16px" }}>
+        <p className="auth-subtitle" style={{ marginBottom: "18px", lineHeight: "1.45" }}>
           Your Trello account is connected. You can now build, link, and visualize cards across your board!
         </p>
         <button
           type="button"
-          onClick={() => {
-            if (t && typeof t.closePopup === "function") {
-              t.closePopup();
-            }
-          }}
+          onClick={handleOpenCanvas}
           className="auth-btn-primary"
         >
-          Continue
+          Open Link Canvas
         </button>
       </div>
     );

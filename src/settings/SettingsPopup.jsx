@@ -60,6 +60,20 @@ export default function SettingsPopup({ t }) {
     }
   }
 
+  function handleOpenCanvas() {
+    if (t && typeof t.modal === "function") {
+      t.modal({
+        url: "./canvas.html",
+        accentColor: "#8546ff",
+        fullscreen: true,
+        title: "Link Canvas",
+      });
+    }
+    if (t && typeof t.closePopup === "function") {
+      t.closePopup();
+    }
+  }
+
   if (status === "checking") {
     return (
       <div className="settings-container" style={{ textAlign: "center", padding: "32px 16px" }}>
@@ -119,6 +133,10 @@ export default function SettingsPopup({ t }) {
           <span className="settings-info-value">Member-Private</span>
         </div>
       </div>
+
+      <button type="button" onClick={handleOpenCanvas} className="settings-btn-primary">
+        Open Link Canvas
+      </button>
 
       <button type="button" onClick={handleDisconnect} className="settings-btn-disconnect">
         Disconnect Account
