@@ -77,10 +77,51 @@ const Banknote = ({ size = 14 }) => (
   </svg>
 );
 
-const IconX = ({ size = 14 }) => (
+const Grid = ({ size = 13 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M18 6 6 18"/>
-    <path d="m6 6 12 12"/>
+    <rect width="7" height="7" x="3" y="3" rx="1"/>
+    <rect width="7" height="7" x="14" y="3" rx="1"/>
+    <rect width="7" height="7" x="14" y="14" rx="1"/>
+    <rect width="7" height="7" x="3" y="14" rx="1"/>
+  </svg>
+);
+
+const Sparkles = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+  </svg>
+);
+
+const Scale = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+    <path d="M7 21h10"/>
+    <path d="M12 3v18"/>
+    <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+  </svg>
+);
+
+const ShoppingBag = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+    <path d="M3 6h18"/>
+    <path d="M16 10a4 4 0 0 1-8 0"/>
+  </svg>
+);
+
+const Zap = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+
+const Rocket = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
   </svg>
 );
 
@@ -91,6 +132,7 @@ const PRESET_IDEAS = {
   hyperlocal: {
     key: "hyperlocal",
     label: "Hyperlocal delivery",
+    icon: Rocket,
     text: "15-minute delivery of artisan bakery goods and specialty coffee for suburban neighborhoods.",
     problem: [
       "Good bakeries are far from suburbs.",
@@ -130,6 +172,7 @@ const PRESET_IDEAS = {
   d2c: {
     key: "d2c",
     label: "D2C food brand",
+    icon: ShoppingBag,
     text: "An instant flavored sattu drink for busy urban professionals looking for clean morning plant nutrition.",
     problem: [
       "Traditional sattu means messy mixing and clumps.",
@@ -168,6 +211,7 @@ const PRESET_IDEAS = {
   lawyers: {
     key: "lawyers",
     label: "AI for lawyers",
+    icon: Scale,
     text: "An AI-powered workspace for boutique corporate law firms to draft and audit contracts 10x faster.",
     problem: [
       "Boutique law firms spend 15+ hrs/week on routine contract redlines.",
@@ -206,6 +250,7 @@ const PRESET_IDEAS = {
   saas: {
     key: "saas",
     label: "SaaS platform",
+    icon: Zap,
     text: "An all-in-one developer platform for real-time edge API monitoring and automated latency alerting.",
     problem: [
       "Distributed microservices cause silent 5xx API outages.",
@@ -255,6 +300,7 @@ export default function CanvasApp({ t }) {
   const [ideaPrompt, setIdeaPrompt] = useState(PRESET_IDEAS.hyperlocal.text);
   const [promptError, setPromptError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [revealedCount, setRevealedCount] = useState(0);
   const [isGenerated, setIsGenerated] = useState(false);
   const [activeCanvas, setActiveCanvas] = useState(PRESET_IDEAS.hyperlocal);
   const [boardCards, setBoardCards] = useState(INITIAL_BOARD_CARDS);
@@ -281,19 +327,29 @@ export default function CanvasApp({ t }) {
     }
     setPromptError("");
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsGenerated(true);
-      if (PRESET_IDEAS[activeChipKey]) {
-        setActiveCanvas(PRESET_IDEAS[activeChipKey]);
+    setIsGenerated(false);
+    setRevealedCount(0);
+
+    let count = 0;
+    const interval = setInterval(() => {
+      count++;
+      setRevealedCount(count);
+      if (count >= 9) {
+        clearInterval(interval);
+        setIsLoading(false);
+        setIsGenerated(true);
+        if (PRESET_IDEAS[activeChipKey]) {
+          setActiveCanvas(PRESET_IDEAS[activeChipKey]);
+        }
+        showToast("✨ Generated 9-box Lean Canvas!");
       }
-      showToast("✨ Generated 9-box Lean Canvas!");
-    }, 600);
+    }, 220);
   }
 
   function handleReset() {
     setIsGenerated(false);
     setIsLoading(false);
+    setRevealedCount(0);
     setPromptError("");
     setBoardCards([
       { id: "c1", title: "Database schema update", box: "Problem" },
@@ -351,6 +407,58 @@ export default function CanvasApp({ t }) {
     c.title.toLowerCase().includes(searchCardsText.toLowerCase())
   );
 
+  function renderBox(boxKey, orderIndex, boxNum, colClass, iconBadgeClass, IconComponent, title, content, subtextHint) {
+    const isFilled = isGenerated || (isLoading && revealedCount >= orderIndex);
+    const isBoxLoading = isLoading && revealedCount < orderIndex;
+    const isJustRevealed = isLoading && revealedCount === orderIndex;
+
+    return (
+      <div
+        className={`lc-box-item ${colClass} ${isFilled ? "is-filled" : ""} ${selectedBoxKey === boxKey ? "active-target" : ""}`}
+        onClick={() => handleBoxClick(boxKey)}
+        onDragOver={handleDragOver}
+        onDrop={(e) => handleDrop(e, boxKey)}
+      >
+        <div className="box-item-header">
+          <div className={`box-icon-badge ${iconBadgeClass}`}>
+            <IconComponent size={14} />
+          </div>
+          <span>{title}</span>
+          <span className="box-num">{boxNum}</span>
+        </div>
+
+        {isBoxLoading ? (
+          <div className="box-skeleton-bars">
+            <div className="skeleton-bar" style={{ width: "85%" }}></div>
+            <div className="skeleton-bar" style={{ width: "65%" }}></div>
+            <div className="skeleton-bar" style={{ width: "75%" }}></div>
+          </div>
+        ) : isFilled ? (
+          <div className={`box-item-bullets ${isJustRevealed ? "box-fade-up" : ""}`}>
+            <ul>
+              {Array.isArray(content) ? (
+                content.map((b, i) => <li key={i}>{b}</li>)
+              ) : (
+                <li>{content}</li>
+              )}
+            </ul>
+          </div>
+        ) : (
+          <p className="box-item-subtext">{subtextHint}</p>
+        )}
+
+        {/* Dropped / Linked Cards Pill */}
+        <div className="box-dropped-cards">
+          {boardCards.filter(c => c.box === boxKey).map(c => (
+            <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+              {c.title}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="lc-exact-app">
       {toastMessage && <div className="lc-toast-bubble">{toastMessage}</div>}
@@ -358,20 +466,23 @@ export default function CanvasApp({ t }) {
       {/* Top Header */}
       <div className="lc-exact-header">
         <div className="header-left-title">
-          <span className={`header-status-pill ${isGenerated ? "ready" : ""}`}>
-            {isLoading ? "Generating..." : isGenerated ? "9 of 9 ready" : "Empty canvas"}
+          <span className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}>
+            <Grid size={13} />
+            <span>
+              {isLoading ? `Drafting ${revealedCount} of 9…` : isGenerated ? "9 of 9 ready" : "Lean canvas · empty"}
+            </span>
           </span>
         </div>
 
         <div className="header-right-tools">
           <button className="btn-header-reset" onClick={handleReset}>
-            Reset
+            {isGenerated ? "Draft again" : "Reset"}
           </button>
-          <button className="btn-header-attach" onClick={handleAttach}>
+          <button
+            className={`btn-header-attach ${isGenerated ? "is-primary" : "is-outline"}`}
+            onClick={handleAttach}
+          >
             <i className="ti ti-paperclip" aria-hidden="true"></i>Attach
-          </button>
-          <button className="btn-header-more" aria-label="Close" title="Close" onClick={() => showToast("Link Canvas 2.0")}>
-            <IconX size={14} />
           </button>
         </div>
       </div>
@@ -415,19 +526,27 @@ export default function CanvasApp({ t }) {
               </div>
 
               <div className="ai-draft-chips-col">
-                {Object.values(PRESET_IDEAS).map((item) => (
-                  <div
-                    key={item.key}
-                    className={`ai-draft-chip ${activeChipKey === item.key ? "active" : ""}`}
-                    onClick={() => handleSelectChip(item)}
-                  >
-                    {item.label}
-                  </div>
-                ))}
+                {Object.values(PRESET_IDEAS).map((item) => {
+                  const ChipIcon = item.icon || Rocket;
+                  return (
+                    <div
+                      key={item.key}
+                      className={`ai-draft-chip ${activeChipKey === item.key ? "active" : ""}`}
+                      onClick={() => handleSelectChip(item)}
+                    >
+                      <span className="chip-icon"><ChipIcon size={14} /></span>
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
               </div>
 
-              <button className="btn-generate-canvas-exact" onClick={handleGenerateCanvas}>
-                <i className="ti ti-sparkles" aria-hidden="true"></i>{isLoading ? "Generating..." : "Generate canvas"}
+              <button
+                className={`btn-generate-canvas-exact ${!isGenerated ? "is-primary" : "is-outline"}`}
+                onClick={handleGenerateCanvas}
+              >
+                <i className="ti ti-sparkles" aria-hidden="true"></i>
+                {isLoading ? `Drafting ${revealedCount} of 9…` : isGenerated ? "Draft again" : "Generate canvas"}
               </button>
             </div>
           ) : (
@@ -464,373 +583,45 @@ export default function CanvasApp({ t }) {
           )}
         </div>
 
-        {/* Right 5-Column 9-Box Matrix */}
+        {/* Right 10-Column 9-Box Matrix */}
         <div className="lc-exact-canvas-board">
-          {/* 1. Problem (Col 1, Row 1-2) */}
-          <div
-            className={`lc-box-item col1-problem ${selectedBoxKey === "Problem" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Problem")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Problem")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-problem">
-                <AlertTriangle size={14} />
-              </div>
-              <span>Problem</span>
+          {/* Empty state callout centered over the canvas */}
+          <div className={`canvas-empty-callout ${isGenerated || isLoading ? "fade-out" : ""}`}>
+            <div className="callout-sparkle-chip">
+              <Sparkles size={14} />
             </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "85%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.problem.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Top 3 pain points</p>
-            )}
-
-            {/* Dropped / Linked Cards Pill */}
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Problem").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
+            <div className="callout-title">Start with your idea</div>
+            <div className="callout-desc">
+              Describe it on the left, then press Generate to draft all 9 boxes.
             </div>
           </div>
 
-          {/* 4. Solution (Col 2, Row 1) */}
-          <div
-            className={`lc-box-item col2-solution ${selectedBoxKey === "Solution" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Solution")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Solution")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-solution">
-                <Lightbulb size={14} />
-              </div>
-              <span>Solution</span>
-            </div>
+          {/* 1. Problem (Order 1, Num 1) */}
+          {renderBox("Problem", 1, 1, "col1-problem", "icon-badge-problem", AlertTriangle, "Problem", activeCanvas.problem, "Top 3 pain points")}
 
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "80%" }}></div>
-                <div className="skeleton-bar" style={{ width: "60%" }}></div>
-                <div className="skeleton-bar" style={{ width: "70%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.solution.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Top 3 features</p>
-            )}
+          {/* 4. Solution (Order 4, Num 4) */}
+          {renderBox("Solution", 4, 4, "col2-solution", "icon-badge-solution", Lightbulb, "Solution", activeCanvas.solution, "Top 3 features")}
 
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Solution").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
+          {/* 8. Key metrics (Order 8, Num 8) */}
+          {renderBox("Key metrics", 8, 8, "col2-metrics", "icon-badge-metrics", BarChart3, "Key metrics", activeCanvas.keyMetrics, "Numbers to track")}
 
-          {/* 8. Key metrics (Col 2, Row 2) */}
-          <div
-            className={`lc-box-item col2-metrics ${selectedBoxKey === "Key metrics" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Key metrics")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Key metrics")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-metrics">
-                <BarChart3 size={14} />
-              </div>
-              <span>Key metrics</span>
-            </div>
+          {/* 3. Value proposition (Order 3, Num 3) */}
+          {renderBox("Value proposition", 3, 3, "col3-uvp", "icon-badge-uvp", Gift, "Value proposition", activeCanvas.uvp, "Clear, compelling message")}
 
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-                <div className="skeleton-bar" style={{ width: "55%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.keyMetrics.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Numbers to track</p>
-            )}
+          {/* 9. Unfair advantage (Order 9, Num 9) */}
+          {renderBox("Unfair advantage", 9, 9, "col4-advantage", "icon-badge-advantage", Shield, "Unfair advantage", activeCanvas.unfairAdvantage, "Cannot be copied")}
 
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Key metrics").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
+          {/* 5. Channels (Order 5, Num 5) */}
+          {renderBox("Channels", 5, 5, "col4-channels", "icon-badge-channels", Route, "Channels", activeCanvas.channels, "Path to customers")}
 
-          {/* 3. Value proposition (Col 3, Row 1-2 Centerpiece) */}
-          <div
-            className={`lc-box-item col3-uvp ${selectedBoxKey === "Value proposition" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Value proposition")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Value proposition")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-uvp">
-                <Gift size={14} />
-              </div>
-              <span>Value proposition</span>
-            </div>
+          {/* 2. Customers (Order 2, Num 2) */}
+          {renderBox("Customers", 2, 2, "col5-customers", "icon-badge-customers", Users, "Customers", activeCanvas.customerSegments, "Target personas")}
 
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "90%" }}></div>
-                <div className="skeleton-bar" style={{ width: "70%" }}></div>
-                <div className="skeleton-bar" style={{ width: "80%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  <li>{activeCanvas.uvp}</li>
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Clear, compelling message</p>
-            )}
+          {/* 7. Cost structure (Order 7, Num 7) */}
+          {renderBox("Cost structure", 7, 7, "span-cost", "icon-badge-cost", Tag, "Cost structure", activeCanvas.costStructure, "Acquisition, infrastructure, hosting")}
 
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Value proposition").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 9. Unfair advantage (Col 4, Row 1) */}
-          <div
-            className={`lc-box-item col4-advantage ${selectedBoxKey === "Unfair advantage" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Unfair advantage")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Unfair advantage")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-advantage">
-                <Shield size={14} />
-              </div>
-              <span>Unfair advantage</span>
-            </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "85%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  <li>{activeCanvas.unfairAdvantage}</li>
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Cannot be copied</p>
-            )}
-
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Unfair advantage").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 5. Channels (Col 4, Row 2) */}
-          <div
-            className={`lc-box-item col4-channels ${selectedBoxKey === "Channels" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Channels")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Channels")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-channels">
-                <Route size={14} />
-              </div>
-              <span>Channels</span>
-            </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "80%" }}></div>
-                <div className="skeleton-bar" style={{ width: "60%" }}></div>
-                <div className="skeleton-bar" style={{ width: "70%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.channels.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Path to customers</p>
-            )}
-
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Channels").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 2. Customers (Col 5, Row 1-2) */}
-          <div
-            className={`lc-box-item col5-customers ${selectedBoxKey === "Customers" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Customers")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Customers")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-customers">
-                <Users size={14} />
-              </div>
-              <span>Customers</span>
-            </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "85%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.customerSegments.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Target personas</p>
-            )}
-
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Customers").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 7. Cost structure (Bottom Left Wide) */}
-          <div
-            className={`lc-box-item span-cost ${selectedBoxKey === "Cost structure" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Cost structure")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Cost structure")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-cost">
-                <Tag size={14} />
-              </div>
-              <span>Cost structure</span>
-            </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "85%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.costStructure.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Acquisition, infrastructure, hosting</p>
-            )}
-
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Cost structure").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* 6. Revenue streams (Bottom Right Wide) */}
-          <div
-            className={`lc-box-item span-revenue ${selectedBoxKey === "Revenue streams" ? "active-target" : ""}`}
-            onClick={() => handleBoxClick("Revenue streams")}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, "Revenue streams")}
-          >
-            <div className="box-item-header">
-              <div className="box-icon-badge icon-badge-revenue">
-                <Banknote size={14} />
-              </div>
-              <span>Revenue streams</span>
-            </div>
-
-            {isLoading ? (
-              <div className="box-skeleton-bars">
-                <div className="skeleton-bar" style={{ width: "85%" }}></div>
-                <div className="skeleton-bar" style={{ width: "65%" }}></div>
-                <div className="skeleton-bar" style={{ width: "75%" }}></div>
-              </div>
-            ) : isGenerated ? (
-              <div className="box-item-bullets">
-                <ul>
-                  {activeCanvas.revenueStreams.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <p className="box-item-subtext">Pricing and monetization</p>
-            )}
-
-            <div className="box-dropped-cards">
-              {boardCards.filter(c => c.box === "Revenue streams").map(c => (
-                <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                  {c.title}
-                </span>
-              ))}
-            </div>
-          </div>
+          {/* 6. Revenue streams (Order 6, Num 6) */}
+          {renderBox("Revenue streams", 6, 6, "span-revenue", "icon-badge-revenue", Banknote, "Revenue streams", activeCanvas.revenueStreams, "Pricing and monetization")}
         </div>
       </div>
     </div>
