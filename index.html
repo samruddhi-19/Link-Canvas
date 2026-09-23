@@ -217,15 +217,16 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div class="card-title">Live Preview</div>
             <div class="tab-buttons">
-              <button class="tab-btn active" onclick="switchTab('./auth.html', this)">Auth Screen</button>
+              <button class="tab-btn active" onclick="switchTab('./canvas.html', this)">Link Canvas</button>
+              <button class="tab-btn" onclick="switchTab('./auth.html', this)">Auth Screen</button>
               <button class="tab-btn" onclick="switchTab('./settings.html', this)">Settings</button>
               <button class="tab-btn" onclick="switchTab('./powerup.html', this)">Connector</button>
             </div>
           </div>
           <p class="card-desc">Interactive sandbox rendering the iframe views exactly as Trello loads them.</p>
 
-          <div class="preview-frame-container">
-            <iframe id="preview-frame" src="./auth.html"></iframe>
+          <div class="preview-frame-container" style="height: 640px;">
+            <iframe id="preview-frame" src="./canvas.html"></iframe>
           </div>
         </div>
 
