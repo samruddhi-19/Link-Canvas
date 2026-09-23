@@ -1,37 +1,28 @@
 :root {
-  --lc-bg: #161A1D;
-  --lc-surface-1: #1D2125;
-  --lc-surface-2: #22272B;
-  --lc-border: #2C333A;
-  --lc-border-strong: #38414A;
-  --lc-text: #DEE4EA;
-  --lc-text-2: #B6C2CF;
-  --lc-text-muted: #738496;
+  --lc-bg: #1B2024;
+  --lc-surface-1: #22272B;
+  --lc-surface-2: #282E33;
+  --lc-border: #333C45;
+  --lc-border-strong: #454F59;
+  --lc-text: #F7F8F9;
+  --lc-text-2: #C7D1DB;
+  --lc-text-muted: #8C9BAB;
   --lc-accent: #579DFF;
-  --lc-accent-bg: #09326C;
+  --lc-accent-bg: #0C3E82;
   --lc-success: #4BCE97;
-  --lc-success-bg: #1C3329;
+  --lc-success-bg: #1C3E30;
   --lc-danger: #F87168;
   
-  /* Per-box accent colours (16% opacity background via color-mix) */
-  --lc-c-problem: #F87168;
-  --lc-c-problem-bg: color-mix(in srgb, #F87168 16%, transparent);
-  --lc-c-solution: #4BCE97;
-  --lc-c-solution-bg: color-mix(in srgb, #4BCE97 16%, transparent);
-  --lc-c-metrics: #579DFF;
-  --lc-c-metrics-bg: color-mix(in srgb, #579DFF 16%, transparent);
-  --lc-c-uvp: #9F8FEF;
-  --lc-c-uvp-bg: color-mix(in srgb, #9F8FEF 16%, transparent);
-  --lc-c-advantage: #E774BB;
-  --lc-c-advantage-bg: color-mix(in srgb, #E774BB 16%, transparent);
-  --lc-c-channels: #FEA362;
-  --lc-c-channels-bg: color-mix(in srgb, #FEA362 16%, transparent);
-  --lc-c-customers: #6CC3E0;
-  --lc-c-customers-bg: color-mix(in srgb, #6CC3E0 16%, transparent);
-  --lc-c-cost: #F5CD47;
-  --lc-c-cost-bg: color-mix(in srgb, #F5CD47 16%, transparent);
-  --lc-c-revenue: #94C748;
-  --lc-c-revenue-bg: color-mix(in srgb, #94C748 16%, transparent);
+  /* Per-box vibrant accent colours */
+  --lc-c-problem: #FF7D75;
+  --lc-c-solution: #57E5A8;
+  --lc-c-metrics: #66ABFF;
+  --lc-c-uvp: #B2A3FF;
+  --lc-c-advantage: #F587C8;
+  --lc-c-channels: #FFB37C;
+  --lc-c-customers: #7CD3ED;
+  --lc-c-cost: #FFD75E;
+  --lc-c-revenue: #A5D957;
 }
 
 * {
@@ -416,8 +407,8 @@ button:active {
 /* INDIVIDUAL 9-BOX CARD */
 .lc-box-item,
 .lc-box {
-  background: color-mix(in srgb, var(--c, var(--lc-accent)) 13%, #1D2125);
-  border: 1px solid color-mix(in srgb, var(--c, var(--lc-accent)) 38%, #2C333A);
+  background: color-mix(in srgb, var(--c, var(--lc-accent)) 20%, #20262B);
+  border: 1px solid color-mix(in srgb, var(--c, var(--lc-accent)) 45%, #38424B);
   border-radius: 10px;
   padding: 8px 10px;
   display: flex;
@@ -431,14 +422,15 @@ button:active {
 
 .lc-box-item:hover,
 .lc-box:hover {
-  border-color: color-mix(in srgb, var(--c, var(--lc-accent)) 55%, #38414A);
-  filter: brightness(1.06);
+  border-color: color-mix(in srgb, var(--c, var(--lc-accent)) 65%, #454F59);
+  background: color-mix(in srgb, var(--c, var(--lc-accent)) 24%, #20262B);
+  filter: brightness(1.08);
 }
 
 .lc-box-item.active-target,
 .lc-box.active-target {
   border-color: var(--c, var(--lc-accent));
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--c, var(--lc-accent)) 40%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--c, var(--lc-accent)) 45%, transparent);
 }
 
 /* Box Header Inside */
@@ -447,13 +439,13 @@ button:active {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   flex-shrink: 0;
 }
 
 .lc-box-title,
 .box-item-header span {
-  color: color-mix(in srgb, var(--c, #ffffff) 55%, #ffffff);
+  color: color-mix(in srgb, var(--c, #ffffff) 65%, #ffffff);
 }
 
 .lc-box-icon,
@@ -464,7 +456,7 @@ button:active {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--c, var(--lc-accent)) 26%, transparent);
+  background: color-mix(in srgb, var(--c, var(--lc-accent)) 30%, transparent);
   color: var(--c, var(--lc-accent));
   flex-shrink: 0;
 }
@@ -479,7 +471,7 @@ button:active {
 .box-item-subtext {
   font-size: 13px;
   line-height: 1.5;
-  color: var(--lc-text-muted);
+  color: color-mix(in srgb, var(--c, #ffffff) 25%, #9AA7B5);
   margin: 0;
 }
 
@@ -519,7 +511,7 @@ button:active {
 .lc-box li {
   font-size: 13px;
   line-height: 1.5;
-  color: #DEE4EA;
+  color: #F7F8F9;
   margin-bottom: 2px;
 }
 
@@ -539,7 +531,7 @@ button:active {
   border-radius: 4px;
   background: var(--lc-accent-bg);
   color: var(--lc-accent);
-  border: 0.5px solid rgba(87, 157, 255, 0.3);
+  border: 0.5px solid rgba(87, 157, 255, 0.4);
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -550,15 +542,15 @@ button:active {
 }
 
 /* Grid Placements & Per-Box Colors */
-.col1-problem   { --c: #F87168; grid-column: 1; grid-row: 1 / span 2; }
-.col2-solution  { --c: #4BCE97; grid-column: 2; grid-row: 1; }
-.col2-metrics   { --c: #579DFF; grid-column: 2; grid-row: 2; }
-.col3-uvp       { --c: #9F8FEF; grid-column: 3; grid-row: 1 / span 2; }
-.col4-advantage { --c: #E774BB; grid-column: 4; grid-row: 1; }
-.col4-channels  { --c: #FEA362; grid-column: 4; grid-row: 2; }
-.col5-customers { --c: #6CC3E0; grid-column: 5; grid-row: 1 / span 2; }
-.span-cost      { --c: #F5CD47; grid-column: 1 / span 2; grid-row: 3; }
-.span-revenue   { --c: #94C748; grid-column: 3 / span 3; grid-row: 3; }
+.col1-problem   { --c: var(--lc-c-problem); grid-column: 1; grid-row: 1 / span 2; }
+.col2-solution  { --c: var(--lc-c-solution); grid-column: 2; grid-row: 1; }
+.col2-metrics   { --c: var(--lc-c-metrics); grid-column: 2; grid-row: 2; }
+.col3-uvp       { --c: var(--lc-c-uvp); grid-column: 3; grid-row: 1 / span 2; }
+.col4-advantage { --c: var(--lc-c-advantage); grid-column: 4; grid-row: 1; }
+.col4-channels  { --c: var(--lc-c-channels); grid-column: 4; grid-row: 2; }
+.col5-customers { --c: var(--lc-c-customers); grid-column: 5; grid-row: 1 / span 2; }
+.span-cost      { --c: var(--lc-c-cost); grid-column: 1 / span 2; grid-row: 3; }
+.span-revenue   { --c: var(--lc-c-revenue); grid-column: 3 / span 3; grid-row: 3; }
 
 /* Toast */
 .lc-toast-bubble {
