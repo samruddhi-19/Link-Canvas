@@ -54,7 +54,7 @@ TrelloPowerUp.initialize({
           return t.modal({
             url: "./canvas.html",
             accentColor: "#181d22",
-            height: 680,
+            height: 580,
             fullscreen: false,
             title: "Link Canvas",
           });
@@ -83,7 +83,7 @@ TrelloPowerUp.initialize({
           return t.modal({
             url: "./canvas.html",
             accentColor: "#181d22",
-            height: 680,
+            height: 580,
             fullscreen: false,
             title: "Link Canvas",
           });
