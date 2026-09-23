@@ -8,12 +8,7 @@ import {
 import {
   CheckIcon,
   SpinnerIcon,
-  ShieldCheckIcon,
   LinkCanvasIcon,
-  AlertCircleIcon,
-  ExternalLinkIcon,
-  KeyRoundIcon,
-  SparklesIcon,
 } from "../lib/icons.jsx";
 import "./auth.css";
 
@@ -22,7 +17,7 @@ export default function AuthPopup({ t }) {
   const [errorMessage, setErrorMessage] = useState("");
   const popupRef = useRef(null);
 
-  // Listen for the postMessage dispatched by /authorized.html once the user approves
+  // Listen for the postMessage dispatched by /authorized.html once the member approves
   useEffect(() => {
     async function handleMessage(event) {
       if (event.origin !== window.location.origin) return;
@@ -47,7 +42,7 @@ export default function AuthPopup({ t }) {
     return () => window.removeEventListener("message", handleMessage);
   }, [t]);
 
-  // Adjust Trello popup size snugly to content
+  // Keep the popup height snugly fit to content so no scrollbars appear
   useEffect(() => {
     if (t && typeof t.sizeTo === "function") {
       t.sizeTo("#root").catch(() => {});
@@ -76,22 +71,10 @@ export default function AuthPopup({ t }) {
       `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes`
     );
 
-    // Check if browser popup blocker prevented window from opening
+    // If popup was blocked by browser pop-up blocker
     if (!popupRef.current || popupRef.current.closed || typeof popupRef.current.closed === "undefined") {
       setStatus("error");
-      setErrorMessage("Popup was blocked by your browser. Please allow popups for this site and click Try Again.");
-    }
-  }
-
-  // Helper for sandbox and local dev testing
-  async function handleSimulateDevAuth() {
-    try {
-      const mockDevToken = "mock_link_canvas_token_" + Math.random().toString(36).substring(2, 10);
-      await saveToken(t, mockDevToken);
-      setStatus("success");
-    } catch (e) {
-      setStatus("error");
-      setErrorMessage(e.message);
+      setErrorMessage("Popup was blocked by your browser. Please allow popups for this site and try again.");
     }
   }
 
@@ -99,11 +82,11 @@ export default function AuthPopup({ t }) {
     return (
       <div className="auth-popup-container auth-state-box">
         <div className="auth-success-circle">
-          <CheckIcon width={28} height={28} />
+          <CheckIcon width={26} height={26} />
         </div>
-        <h3 className="auth-title" style={{ fontSize: "18px" }}>Link Canvas Connected!</h3>
-        <p className="auth-body-text" style={{ textAlign: "center", marginBottom: "20px", marginTop: "6px" }}>
-          Your Trello account is now authorized. You can now build visual relationship graphs, link cards, and organize your canvas.
+        <h3 className="auth-title">Connected to {APP_NAME}</h3>
+        <p className="auth-subtitle" style={{ marginBottom: "16px" }}>
+          Your Trello account is connected. You can now build, link, and visualize cards across your board!
         </p>
         <button
           type="button"
@@ -114,8 +97,7 @@ export default function AuthPopup({ t }) {
           }}
           className="auth-btn-primary"
         >
-          <SparklesIcon width={16} height={16} />
-          Open Link Canvas
+          Continue
         </button>
       </div>
     );
@@ -123,70 +105,41 @@ export default function AuthPopup({ t }) {
 
   return (
     <div className="auth-popup-container">
-      {/* Brand Header */}
       <div className="auth-header">
         <div className="auth-icon-badge">
-          <LinkCanvasIcon width={24} height={24} />
+          <LinkCanvasIcon width={22} height={22} />
         </div>
         <div>
-          <h3 className="auth-title">Authorize {APP_NAME}</h3>
-          <p className="auth-subtitle">Visual Board Mapping & Links</p>
+          <h3 className="auth-title">Connect {APP_NAME}</h3>
+          <p className="auth-subtitle">Trello Authorization</p>
         </div>
       </div>
 
       <p className="auth-body-text">
-        Connect your Trello account so <strong>{APP_NAME}</strong> can visualize card connections, map board flows, and keep your visual canvas in sync.
+        Connect your Trello account so {APP_NAME} can securely manage visual canvas nodes, card links, and board connections.
       </p>
 
-      {/* Feature Value Showcase */}
       <div className="auth-features-list">
         <div className="auth-feature-item">
-          <div className="auth-feature-icon">
-            <LinkCanvasIcon width={13} height={13} />
-          </div>
-          <div>
-            <strong>Interactive Canvas Graph</strong>
-            <span>Create visual node connections between cards and external links</span>
-          </div>
+          <span className="auth-feature-dot"></span>
+          <span>Visualize and link cards on interactive canvas</span>
         </div>
-
         <div className="auth-feature-item">
-          <div className="auth-feature-icon">
-            <SparklesIcon width={13} height={13} />
-          </div>
-          <div>
-            <strong>Bidirectional Card Sync</strong>
-            <span>Keep canvas positions and relationship badges up to date</span>
-          </div>
+          <span className="auth-feature-dot"></span>
+          <span>Display relationship badges & connections</span>
         </div>
-
         <div className="auth-feature-item">
-          <div className="auth-feature-icon">
-            <ShieldCheckIcon width={13} height={13} />
-          </div>
-          <div>
-            <strong>Member-Private Security</strong>
-            <span>Tokens are stored in Trello's member-private storage, never sent externally</span>
-          </div>
+          <span className="auth-feature-dot"></span>
+          <span>Member-scoped private token storage</span>
         </div>
-      </div>
-
-      <div className="auth-security-pill">
-        <ShieldCheckIcon width={14} height={14} />
-        <span>Official Trello OAuth 2.0 • Zero-credential storage</span>
       </div>
 
       {status === "error" && (
         <div className="auth-error-box">
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", fontWeight: 600 }}>
-            <AlertCircleIcon width={15} height={15} />
-            <span>Connection issue</span>
-          </div>
-          {errorMessage || "Couldn't complete authorization. Please verify popups are enabled and try again."}
+          {errorMessage || "Couldn't connect. Please verify popups are allowed and try again."}
         </div>
       )}
 
-      {/* Action Button */}
       <button
         type="button"
         onClick={handleAuthorize}
@@ -196,21 +149,17 @@ export default function AuthPopup({ t }) {
         {status === "waiting" ? (
           <>
             <SpinnerIcon width={16} height={16} />
-            Waiting for Trello Approval…
+            Waiting for approval…
           </>
         ) : (
-          <>
-            <KeyRoundIcon width={16} height={16} />
-            Connect Trello Account
-          </>
+          "Connect Trello Account"
         )}
       </button>
 
       {status === "waiting" && (
-        <div className="auth-waiting-notice">
-          <ExternalLinkIcon width={13} height={13} />
-          <span>Please complete authorization in the popup window</span>
-        </div>
+        <p className="auth-body-text" style={{ textAlign: "center", marginTop: "10px", fontSize: "12px" }}>
+          Please complete authorization in the popup window.
+        </p>
       )}
 
       {status === "error" && (
@@ -218,16 +167,6 @@ export default function AuthPopup({ t }) {
           Try again
         </button>
       )}
-
-      {/* Local Dev Simulator (helpful when running outside Trello) */}
-      <button
-        type="button"
-        onClick={handleSimulateDevAuth}
-        className="auth-btn-mock"
-        title="Simulates successful authorization for local testing without Trello OAuth redirect"
-      >
-        ⚡ Dev Quick Connect (Local Testing)
-      </button>
     </div>
   );
 }

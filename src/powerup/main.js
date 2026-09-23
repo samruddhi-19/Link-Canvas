@@ -18,7 +18,7 @@ TrelloPowerUp.initialize({
     return t.popup({
       title: "Authorize Link Canvas",
       url: "./auth.html",
-      height: 480,
+      height: 320,
     });
   },
 
@@ -27,7 +27,7 @@ TrelloPowerUp.initialize({
     return t.popup({
       title: "Link Canvas Settings",
       url: "./settings.html",
-      height: 320,
+      height: 280,
     });
   },
 
@@ -46,7 +46,7 @@ TrelloPowerUp.initialize({
             return t.popup({
               title: "Authorize Link Canvas",
               url: "./auth.html",
-              height: 480,
+              height: 320,
             });
           }
 
@@ -54,7 +54,7 @@ TrelloPowerUp.initialize({
           return t.popup({
             title: "Link Canvas",
             url: "./settings.html",
-            height: 340,
+            height: 280,
           });
         },
       },
@@ -73,13 +73,13 @@ TrelloPowerUp.initialize({
             return t.popup({
               title: "Authorize Link Canvas",
               url: "./auth.html",
-              height: 480,
+              height: 320,
             });
           }
           return t.popup({
             title: "Card Connections",
             url: "./settings.html",
-            height: 320,
+            height: 280,
           });
         },
       },
