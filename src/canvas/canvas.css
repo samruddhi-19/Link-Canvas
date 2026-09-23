@@ -1,4 +1,7 @@
-/* Canvas Modal & Initial Screen CSS - User Persona Dark Palette */
+/* ==========================================================================
+   Link Canvas - Concept 1 (9-Box Blueprint Schematic UI)
+   ========================================================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -6,23 +9,29 @@
 .canvas-wrapper {
   height: 100vh;
   width: 100%;
-  background: #1d2125;
+  background: #11151c;
   color: #f7f8f9;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  scrollbar-width: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   -webkit-font-smoothing: antialiased;
 }
 
 .canvas-wrapper::-webkit-scrollbar {
-  display: none;
+  width: 5px;
+}
+.canvas-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
 }
 
+/* Header */
 .canvas-modal-header {
-  padding: 16px 24px;
-  background: #181d22;
+  padding: 14px 24px;
+  background: #161b22;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -33,112 +42,115 @@
 .header-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
-.icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, rgba(133, 70, 255, 0.25) 0%, rgba(87, 157, 255, 0.25) 100%);
-  border: 1px solid rgba(133, 70, 255, 0.4);
+.brand-logo-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a78bfa;
-  font-size: 18px;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
   flex-shrink: 0;
 }
 
-.header-titles h2 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #f7f8f9;
+.brand-title-group {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0;
 }
 
-.header-badge {
-  font-size: 11px;
+.brand-name {
+  font-size: 16px;
   font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.2px;
+  color: #f7f8f9;
+}
+
+.brand-pill {
+  font-size: 11px;
+  font-weight: 600;
   padding: 2px 8px;
   border-radius: 9999px;
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
+  background: rgba(133, 70, 255, 0.18);
+  color: #c4b5fd;
+  border: 1px solid rgba(133, 70, 255, 0.35);
+  letter-spacing: 0.2px;
 }
 
-.header-subtitle {
-  font-size: 12.5px;
-  color: #9fadbc;
-  margin: 3px 0 0 0;
-}
-
+/* Body Container */
 .canvas-modal-body {
   flex: 1;
-  padding: 22px 24px;
-  max-width: 960px;
+  padding: 16px 24px 20px;
+  max-width: 980px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
+  gap: 14px;
 }
 
+/* Main AI Hero Card */
 .ai-hero-card {
-  background: #22272b;
+  background: #181d24;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 20px 22px;
-  margin-bottom: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 18px 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
-.card-eyebrow {
+.card-top-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  background: rgba(75, 206, 151, 0.15);
-  border: 1px solid rgba(75, 206, 151, 0.3);
-  color: #4bce97;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.input-label {
-  font-size: 15px;
+  font-size: 11px;
   font-weight: 600;
-  color: #f7f8f9;
-  margin: 0 0 4px 0;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
 }
 
-.input-desc {
-  font-size: 12.5px;
-  color: #9fadbc;
+.sparkle-icon {
+  color: #a78bfa;
+}
+
+.hero-main-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 2px 0;
+  letter-spacing: -0.3px;
+}
+
+.hero-subtext {
+  font-size: 12px;
+  color: #94a3b8;
   margin: 0 0 12px 0;
   line-height: 1.4;
 }
 
+/* Prompt Input */
+.prompt-input-wrapper {
+  margin-bottom: 12px;
+}
+
 .prompt-textarea {
   width: 100%;
-  height: 68px;
+  height: 58px;
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   font-family: inherit;
   font-size: 13px;
   color: #f7f8f9;
-  background: #161a1d;
+  background: #0f1217;
   resize: none;
   outline: none;
   transition: all 0.2s ease;
@@ -148,156 +160,257 @@
 .prompt-textarea:focus {
   border-color: #579dff;
   box-shadow: 0 0 0 2px rgba(87, 157, 255, 0.25);
+  background: #12161d;
 }
 
-.chips-row {
+/* Idea Starters + CTA Row */
+.prompt-controls-row {
   display: flex;
   align-items: center;
-  gap: 7px;
+  justify-content: space-between;
+  gap: 12px;
   flex-wrap: wrap;
-  margin: 12px 0 16px 0;
+  margin-bottom: 16px;
 }
 
-.chips-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #9fadbc;
-  margin-right: 3px;
+.chips-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.chip-btn {
-  padding: 5px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #282e33;
+.chip-pill {
+  padding: 4px 11px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1f2530;
   color: #c7d1db;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.chip-btn:hover {
+.chip-pill:hover,
+.chip-pill.active {
   border-color: #579dff;
   color: #ffffff;
-  background: #333c44;
+  background: #2a3342;
 }
 
-.card-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.btn-generate {
+.btn-generate-primary {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 9px 18px;
-  border-radius: 6px;
+  border-radius: 7px;
   border: none;
-  background: linear-gradient(135deg, #8546ff 0%, #579dff 100%);
+  background: linear-gradient(135deg, #8546ff 0%, #388bff 100%);
   color: #ffffff;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(133, 70, 255, 0.35);
+  box-shadow: 0 2px 12px rgba(133, 70, 255, 0.4);
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.btn-generate:hover {
+.btn-generate-primary:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(133, 70, 255, 0.55);
 }
 
-.btn-preview-link {
-  font-size: 12px;
-  color: #9fadbc;
+.btn-sparkle {
+  font-size: 14px;
 }
 
-.alternatives-container {
+/* ==========================================================================
+   9-Box Blueprint Schematic Diagram
+   ========================================================================== */
+.schematic-blueprint-card {
+  background: #11151c;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.schematic-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  min-height: 110px;
+}
+
+.blueprint-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.blueprint-box {
+  background: #181e28;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 7px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  transition: all 0.2s ease;
+}
+
+.blueprint-box:hover {
+  border-color: rgba(87, 157, 255, 0.3);
+  background: #1e2634;
+}
+
+.blueprint-box.highlight-center {
+  border-color: rgba(133, 70, 255, 0.25);
+  background: #1a1e2b;
+}
+
+.blueprint-box.highlight-side {
+  border-color: rgba(56, 139, 255, 0.2);
+}
+
+.box-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+}
+
+.box-hint {
+  font-size: 9.5px;
+  color: #738496;
+  line-height: 1.3;
+}
+
+.schematic-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  min-height: 48px;
+}
+
+/* ==========================================================================
+   Bottom Action Trays
+   ========================================================================== */
+.bottom-trays-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.alt-card {
-  background: #22272b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.tray-card {
+  background: #181d24;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.alt-card:hover {
+.tray-card:hover {
   border-color: rgba(255, 255, 255, 0.2);
-  background: #282e33;
+  background: #1f2530;
   transform: translateY(-1px);
 }
 
-.alt-icon {
-  width: 34px;
-  height: 34px;
+.tray-icon-box {
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
+  background: #11151c;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  color: #94a3b8;
   flex-shrink: 0;
 }
 
-.alt-icon.blank {
-  background: rgba(255, 255, 255, 0.08);
-  color: #9fadbc;
+.tray-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
-.alt-icon.template {
-  background: rgba(87, 157, 255, 0.15);
-  color: #579dff;
+.company-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  letter-spacing: -0.2px;
 }
 
-.alt-text h4 {
+.company-badge.uber {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.company-badge.stripe {
+  background: #635bff;
+  color: #ffffff;
+}
+
+.company-badge.airbnb {
+  background: #ff5a5f;
+  color: #ffffff;
+  font-size: 9px;
+}
+
+.tray-title {
   font-size: 13px;
   font-weight: 600;
   color: #f7f8f9;
   margin: 0 0 2px 0;
 }
 
-.alt-text p {
+.tray-desc {
   font-size: 11.5px;
-  color: #9fadbc;
+  color: #94a3b8;
   margin: 0;
 }
 
+/* Footer */
 .canvas-modal-footer {
   padding: 10px 24px;
-  background: #181d22;
+  background: #161b22;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 11px;
   color: #738496;
   flex-shrink: 0;
 }
 
-.footer-badge {
+.footer-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #9fadbc;
+  color: #94a3b8;
 }
 
-.footer-badge span.dot {
+.status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #4bce97;
+}
+
+.footer-meta {
+  color: #64748b;
 }
