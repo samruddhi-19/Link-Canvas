@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./canvas.css";
 
 // =========================================================================
 // PHASE 2 ICONS (Lucide 14px in 20px chips with 6px radius)
 // =========================================================================
+const Palette = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+  </svg>
+);
 const AlertTriangle = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
@@ -287,6 +296,24 @@ const PRESET_IDEAS = {
   }
 };
 
+const HUES = [
+  { c: "#FF7D75", bg: "color-mix(in srgb, #FF7D75 13%, #1D2125)", bd: "color-mix(in srgb, #FF7D75 30%, #2C333A)", ti: "color-mix(in srgb, #FF7D75 55%, #fff)" },
+  { c: "#57E5A8", bg: "color-mix(in srgb, #57E5A8 13%, #1D2125)", bd: "color-mix(in srgb, #57E5A8 30%, #2C333A)", ti: "color-mix(in srgb, #57E5A8 55%, #fff)" },
+  { c: "#66ABFF", bg: "color-mix(in srgb, #66ABFF 13%, #1D2125)", bd: "color-mix(in srgb, #66ABFF 30%, #2C333A)", ti: "color-mix(in srgb, #66ABFF 55%, #fff)" },
+  { c: "#B2A3FF", bg: "color-mix(in srgb, #B2A3FF 13%, #1D2125)", bd: "color-mix(in srgb, #B2A3FF 30%, #2C333A)", ti: "color-mix(in srgb, #B2A3FF 55%, #fff)" },
+  { c: "#F587C8", bg: "color-mix(in srgb, #F587C8 13%, #1D2125)", bd: "color-mix(in srgb, #F587C8 30%, #2C333A)", ti: "color-mix(in srgb, #F587C8 55%, #fff)" },
+  { c: "#FFB37C", bg: "color-mix(in srgb, #FFB37C 13%, #1D2125)", bd: "color-mix(in srgb, #FFB37C 30%, #2C333A)", ti: "color-mix(in srgb, #FFB37C 55%, #fff)" },
+  { c: "#7CD3ED", bg: "color-mix(in srgb, #7CD3ED 13%, #1D2125)", bd: "color-mix(in srgb, #7CD3ED 30%, #2C333A)", ti: "color-mix(in srgb, #7CD3ED 55%, #fff)" },
+  { c: "#FFD75E", bg: "color-mix(in srgb, #FFD75E 13%, #1D2125)", bd: "color-mix(in srgb, #FFD75E 30%, #2C333A)", ti: "color-mix(in srgb, #FFD75E 55%, #fff)" },
+  { c: "#A5D957", bg: "color-mix(in srgb, #A5D957 13%, #1D2125)", bd: "color-mix(in srgb, #A5D957 30%, #2C333A)", ti: "color-mix(in srgb, #A5D957 55%, #fff)" }
+];
+
+const LOOK_OPTIONS = [
+  { key: "rich", title: "Rich tones", desc: "Deep colour per box" },
+  { key: "icon", title: "Icon accent", desc: "Neutral boxes, bright icons" },
+  { key: "gradient", title: "Soft gradient", desc: "Rich tones with a fade" }
+];
+
 const INITIAL_BOARD_CARDS = [
   { id: "c1", title: "Database schema update", box: "Problem" },
   { id: "c2", title: "Fix login bug", box: null },
@@ -295,6 +322,10 @@ const INITIAL_BOARD_CARDS = [
 ];
 
 export default function CanvasApp({ t }) {
+  const [currentLook, setCurrentLook] = useState("rich"); // "rich" | "icon" | "gradient"
+  const [isLookPickerOpen, setIsLookPickerOpen] = useState(false);
+  const lookPickerRef = useRef(null);
+
   const [activeTab, setActiveTab] = useState("ai"); // "ai" or "cards"
   const [activeChipKey, setActiveChipKey] = useState("hyperlocal");
   const [ideaPrompt, setIdeaPrompt] = useState(PRESET_IDEAS.hyperlocal.text);
@@ -307,6 +338,46 @@ export default function CanvasApp({ t }) {
   const [searchCardsText, setSearchCardsText] = useState("");
   const [selectedBoxKey, setSelectedBoxKey] = useState("Problem");
   const [toastMessage, setToastMessage] = useState(null);
+
+  useEffect(() => {
+    if (t && typeof t.get === "function") {
+      t.get("member", "private", "lcLook")
+        .then((savedLook) => {
+          if (savedLook && ["rich", "icon", "gradient"].includes(savedLook)) {
+            setCurrentLook(savedLook);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [t]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (lookPickerRef.current && !lookPickerRef.current.contains(e.target)) {
+        setIsLookPickerOpen(false);
+      }
+    }
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        setIsLookPickerOpen(false);
+      }
+    }
+    if (isLookPickerOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isLookPickerOpen]);
+
+  function handleSelectLook(lookKey) {
+    setCurrentLook(lookKey);
+    if (t && typeof t.set === "function") {
+      t.set("member", "private", "lcLook", lookKey).catch(() => {});
+    }
+  }
 
   function showToast(msg) {
     setToastMessage(msg);
@@ -460,7 +531,7 @@ export default function CanvasApp({ t }) {
   }
 
   return (
-    <div className="lc-exact-app">
+    <div className={`lc-exact-app look-${currentLook}`}>
       {toastMessage && <div className="lc-toast-bubble">{toastMessage}</div>}
 
       {/* Top Header */}
@@ -474,9 +545,16 @@ export default function CanvasApp({ t }) {
           </span>
         </div>
 
-        <div className="header-right-tools">
+        <div className="header-right-tools" ref={lookPickerRef} style={{ position: "relative" }}>
           <button className="btn-header-reset" onClick={handleReset}>
             {isGenerated ? "Draft again" : "Reset"}
+          </button>
+          <button
+            className={`btn-header-look ${isLookPickerOpen ? "active" : ""}`}
+            onClick={() => setIsLookPickerOpen(!isLookPickerOpen)}
+          >
+            <Palette size={14} />
+            <span>Look</span>
           </button>
           <button
             className={`btn-header-attach ${isGenerated ? "is-primary" : "is-outline"}`}
@@ -484,6 +562,43 @@ export default function CanvasApp({ t }) {
           >
             <i className="ti ti-paperclip" aria-hidden="true"></i>Attach
           </button>
+
+          {isLookPickerOpen && (
+            <div className="lc-look-picker-popover">
+              <div className="look-picker-label">Choose a look</div>
+              <div className="look-picker-rows" role="radiogroup">
+                {LOOK_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    role="radio"
+                    aria-checked={currentLook === opt.key}
+                    className={`look-row-btn ${currentLook === opt.key ? "selected" : ""}`}
+                    onClick={() => handleSelectLook(opt.key)}
+                  >
+                    <div className={`mini-preview-grid preview-${opt.key}`}>
+                      {HUES.map((hue, i) => (
+                        <div
+                          key={i}
+                          className="mini-cell"
+                          style={{
+                            "--c": hue.c,
+                            "--bg": hue.bg,
+                            "--bd": hue.bd,
+                            "--ti": hue.ti
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="look-row-text">
+                      <div className="look-row-title">{opt.title}</div>
+                      <div className="look-row-desc">{opt.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -138,6 +138,27 @@ button:active {
   border-color: var(--lc-border-strong);
 }
 
+.btn-header-look {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--lc-text-2);
+  border: 0.5px solid var(--lc-border);
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-header-look:hover,
+.btn-header-look.active {
+  background: var(--lc-surface-2);
+  color: var(--lc-text);
+  border-color: var(--lc-border-strong);
+}
+
 .btn-header-attach {
   height: 30px;
   padding: 0 14px;
@@ -164,6 +185,108 @@ button:active {
 
 .btn-header-attach:hover {
   filter: brightness(1.1);
+}
+
+/* =========================================================================
+   LOOK PICKER POPOVER
+   ========================================================================= */
+.lc-look-picker-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 264px;
+  background: #22272B;
+  border: 1px solid #38414A;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.look-picker-label {
+  font-size: 11px;
+  color: #738496;
+  font-weight: 500;
+}
+
+.look-picker-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.look-row-btn {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #2C333A;
+  background: var(--lc-surface-1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.look-row-btn:hover {
+  background: var(--lc-surface-2);
+  border-color: var(--lc-border-strong);
+}
+
+.look-row-btn.selected {
+  border: 1px solid #579DFF;
+  background: rgba(87, 157, 255, 0.08);
+}
+
+.mini-preview-grid {
+  width: 58px;
+  display: grid;
+  grid-template-columns: repeat(3, 18px);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mini-cell {
+  width: 18px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.preview-rich .mini-cell {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+}
+
+.preview-icon .mini-cell {
+  background: #22272B;
+  border: 1px solid #2C333A;
+  box-shadow: inset 0 -2px 0 0 var(--c);
+}
+
+.preview-gradient .mini-cell {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--bd) 60%, var(--bg)) 0%, var(--bg) 62%);
+  border: 1px solid var(--bd);
+}
+
+.look-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.look-row-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #DEE4EA;
+}
+
+.look-row-desc {
+  font-size: 11px;
+  color: #738496;
 }
 
 /* =========================================================================
@@ -492,15 +615,69 @@ button:active {
   border-radius: 0 0 3px 3px;
 }
 
-.lc-box-item.is-filled,
-.lc-box.is-filled {
-  background: color-mix(in srgb, var(--c, var(--lc-accent)) 13%, #1D2125);
-  border: 1px solid color-mix(in srgb, var(--c, var(--lc-accent)) 30%, #2C333A);
+/* 1. Rich Look (Default) */
+.look-rich .lc-box-item.is-filled,
+.look-rich .lc-box.is-filled {
+  background: var(--bg, color-mix(in srgb, var(--c) 13%, #1D2125));
+  border: 1px solid var(--bd, color-mix(in srgb, var(--c) 30%, #2C333A));
 }
 
+.look-rich .lc-box-title,
+.look-rich .box-item-header span:not(.box-num) {
+  color: var(--ti, color-mix(in srgb, var(--c) 55%, #ffffff));
+}
+
+.look-rich .lc-box-icon,
+.look-rich .box-icon-badge {
+  background: var(--bd, color-mix(in srgb, var(--c) 30%, #2C333A));
+  color: var(--ti, color-mix(in srgb, var(--c) 55%, #ffffff));
+}
+
+/* 2. Icon Accent Look */
+.look-icon .lc-box-item.is-filled,
+.look-icon .lc-box.is-filled {
+  background: #22272B;
+  border: 1px solid #2C333A;
+}
+
+.look-icon .lc-box-title,
+.look-icon .box-item-header span:not(.box-num) {
+  color: #DEE4EA;
+}
+
+.look-icon .lc-box-icon,
+.look-icon .box-icon-badge {
+  background: var(--c, var(--lc-accent));
+  color: #161A1D;
+}
+
+.look-icon .box-item-header {
+  padding-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--c, var(--lc-accent)) 45%, transparent);
+}
+
+/* 3. Soft Gradient Look */
+.look-gradient .lc-box-item.is-filled,
+.look-gradient .lc-box.is-filled {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--bd) 60%, var(--bg)) 0%, var(--bg) 62%);
+  border: 1px solid var(--bd, color-mix(in srgb, var(--c) 30%, #2C333A));
+}
+
+.look-gradient .lc-box-title,
+.look-gradient .box-item-header span:not(.box-num) {
+  color: var(--ti, color-mix(in srgb, var(--c) 55%, #ffffff));
+}
+
+.look-gradient .lc-box-icon,
+.look-gradient .box-icon-badge {
+  background: var(--bd, color-mix(in srgb, var(--c) 30%, #2C333A));
+  color: var(--ti, color-mix(in srgb, var(--c) 55%, #ffffff));
+}
+
+/* Hover on every look */
 .lc-box-item:hover,
 .lc-box:hover {
-  border-color: color-mix(in srgb, var(--c, var(--lc-accent)) 55%, #2C333A);
+  border-color: var(--c, var(--lc-accent)) !important;
   transform: translateY(-1px);
 }
 
@@ -519,11 +696,6 @@ button:active {
   font-weight: 600;
   flex-shrink: 0;
   width: 100%;
-}
-
-.lc-box-title,
-.box-item-header span:not(.box-num) {
-  color: color-mix(in srgb, var(--c, #ffffff) 55%, #ffffff);
 }
 
 .box-num {
@@ -641,16 +813,16 @@ button:active {
   white-space: nowrap;
 }
 
-/* 10-Column Grid Placements & Per-Box Colors */
-.col1-problem   { --c: var(--lc-c-problem); grid-column: 1 / span 2; grid-row: 1 / span 2; }
-.col2-solution  { --c: var(--lc-c-solution); grid-column: 3 / span 2; grid-row: 1; }
-.col2-metrics   { --c: var(--lc-c-metrics); grid-column: 3 / span 2; grid-row: 2; }
-.col3-uvp       { --c: var(--lc-c-uvp); grid-column: 5 / span 2; grid-row: 1 / span 2; }
-.col4-advantage { --c: var(--lc-c-advantage); grid-column: 7 / span 2; grid-row: 1; }
-.col4-channels  { --c: var(--lc-c-channels); grid-column: 7 / span 2; grid-row: 2; }
-.col5-customers { --c: var(--lc-c-customers); grid-column: 9 / span 2; grid-row: 1 / span 2; }
-.span-cost      { --c: var(--lc-c-cost); grid-column: 1 / span 5; grid-row: 3; }
-.span-revenue   { --c: var(--lc-c-revenue); grid-column: 6 / span 5; grid-row: 3; }
+/* 10-Column Grid Placements & Per-Box Tone Sets */
+.col1-problem   { --c: var(--lc-c-problem); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 1 / span 2; grid-row: 1 / span 2; }
+.col2-solution  { --c: var(--lc-c-solution); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 3 / span 2; grid-row: 1; }
+.col2-metrics   { --c: var(--lc-c-metrics); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 3 / span 2; grid-row: 2; }
+.col3-uvp       { --c: var(--lc-c-uvp); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 5 / span 2; grid-row: 1 / span 2; }
+.col4-advantage { --c: var(--lc-c-advantage); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 7 / span 2; grid-row: 1; }
+.col4-channels  { --c: var(--lc-c-channels); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 7 / span 2; grid-row: 2; }
+.col5-customers { --c: var(--lc-c-customers); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 9 / span 2; grid-row: 1 / span 2; }
+.span-cost      { --c: var(--lc-c-cost); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 1 / span 5; grid-row: 3; }
+.span-revenue   { --c: var(--lc-c-revenue); --bg: color-mix(in srgb, var(--c) 13%, #1D2125); --bd: color-mix(in srgb, var(--c) 30%, #2C333A); --ti: color-mix(in srgb, var(--c) 55%, #ffffff); grid-column: 6 / span 5; grid-row: 3; }
 
 /* Toast */
 .lc-toast-bubble {
