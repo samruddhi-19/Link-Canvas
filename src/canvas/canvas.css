@@ -205,15 +205,16 @@
   border-radius: 9999px;
 }
 
-/* Initial Screen Body */
+/* Initial Screen Body - Centered in Widescreen */
 .initial-body {
-  padding: 14px 20px 16px;
-  max-width: 960px;
-  margin: 0 auto;
+  padding: 24px 20px;
+  max-width: 680px;
+  margin: auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  justify-content: center;
 }
 
 /* AI Hero Card */
@@ -503,17 +504,18 @@
    VIEW 2: Full Horizontal 5-Column Ash Maurya Lean Canvas Board
    ========================================================================== */
 .horizontal-body {
-  padding: 12px 16px 14px;
+  padding: 14px 22px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
+  max-width: 100%;
 }
 
 .lean-canvas-horizontal-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   align-items: stretch;
 }
