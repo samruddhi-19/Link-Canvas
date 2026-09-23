@@ -7,78 +7,89 @@ import "./canvas.css";
 const PRESET_CANVASES = {
   hyperlocal: {
     title: "15-Minute Artisan Bakery & Specialty Coffee",
+    previewText: {
+      problem: "Good bakeries are far from suburbs. Delivery arrives cold and late. No fresh coffee on demand.",
+      solution: "Micro-hubs, insulated couriers, live batch tracking.",
+      valueProposition: "Oven-fresh bread and barista coffee at your door in 15 minutes.",
+      unfairAdvantage: "Exclusive baker partnerships.",
+      customerSegments: "Suburban families and remote workers.",
+      keyMetrics: "Delivery time, repeat rate.",
+      channels: "App, local Facebook groups.",
+      costStructure: "Hub rent, couriers, ingredients, app hosting.",
+      revenueStreams: "Order margin, delivery fee, subscriptions."
+    },
     problem: {
       bullets: [
-        "Good artisan bakeries are far from suburban neighborhoods with no quick access.",
-        "Traditional food delivery platforms take 45 to 60 minutes and items arrive cold or crushed.",
-        "Suburban remote workers lack reliable on-demand access to freshly brewed specialty morning coffee."
+        "Good bakeries are far from suburbs.",
+        "Delivery arrives cold and late.",
+        "No fresh coffee on demand."
       ],
       note: {
         label: "Existing alternatives",
-        text: "Supermarket packaged bread, stale pod coffee, 30-minute drives to downtown boutique cafes."
+        text: "Loose bakery goods from grocery stores; stale coffee pods; 30-minute drives downtown."
       }
     },
     customerSegments: {
       bullets: [
-        "Work-from-home professionals wanting fresh morning pastries and specialty coffee.",
-        "Suburban families hosting weekend breakfasts and morning brunch gatherings.",
-        "Local artisan bakeries seeking dedicated morning delivery logistics."
+        "Suburban families and remote workers.",
+        "WFH tech employees wanting quick morning artisan breakfast.",
+        "Local boutique bakeries looking for dedicated fast delivery."
       ],
       note: {
         label: "Early adopters",
-        text: "Tech-savvy remote workers in gated suburban residential communities."
+        text: "Suburban households and remote workers in gated communities."
       }
     },
     valueProposition: {
       bullets: [
-        "Oven-fresh artisan bread and barista-grade coffee delivered to your doorstep in under 15 minutes."
+        "Oven-fresh bread and barista coffee at your door in 15 minutes."
       ],
       note: {
         label: "High-level concept",
-        text: "Quick-commerce speed meets blue-ribbon French bakery quality at your doorstep."
+        text: "Blinkit speed meets French artisan bakery quality at your doorstep."
       }
     },
     solution: {
       bullets: [
-        "Neighborhood micro-hubs equipped with rapid warming stations for par-baked artisan pastries.",
-        "Curated daily morning drop menus from top city bakeries and micro-roasters.",
-        "Insulated fast courier fleet guaranteeing under 15-minute temperature-controlled arrival."
+        "Micro-hubs, insulated couriers, live batch tracking.",
+        "Curated daily morning drop menus from top city bakeries.",
+        "1-tap recurring breakfast scheduling app."
       ],
       note: null
     },
     channels: {
       bullets: [
-        "Direct iOS and Android mobile ordering app with 1-tap recurring breakfast scheduling.",
-        "Suburban community WhatsApp group partnerships and localized neighborhood HOA flyers.",
-        "Co-branded packaging and counter promo displays inside partner artisan bakeries."
+        "App, local Facebook groups.",
+        "Neighborhood WhatsApp community partnerships.",
+        "Co-branded packaging in partner bakeries."
       ],
       note: null
     },
     revenueStreams: {
       bullets: [
-        "Order markup and convenience delivery fee of ₹49 to ₹79 per suburban order.",
-        "Monthly Morning Pass subscription at ₹499 per month for unlimited zero-fee 15-minute delivery.",
-        "Bulk corporate catering and weekend family brunch bundles."
+        "Order margin, delivery fee, subscriptions.",
+        "Monthly Morning Pass subscription for unlimited free delivery.",
+        "Weekend family brunch catering bundles."
       ],
       note: null
     },
     costStructure: {
       bullets: [
-        "Micro-hub lease, maintenance, and commercial temperature-controlled warming lockers.",
-        "Dedicated e-bike courier fleet and hourly rider compensation."
+        "Hub rent, couriers, ingredients, app hosting.",
+        "Insulated delivery gear & warming lockers."
       ],
       note: null
     },
     keyMetrics: {
       bullets: [
-        "Average fulfillment speed kept under 14 minutes from order placement to door.",
-        "30-day repeat order rate exceeding 42% among suburban breakfast subscribers."
+        "Delivery time, repeat rate.",
+        "Average basket value above ₹450 ($15)."
       ],
       note: null
     },
     unfairAdvantage: {
       bullets: [
-        "Exclusive suburban distribution contracts with top 5 artisan bakeries in the metro region."
+        "Exclusive baker partnerships."
       ],
       note: null
     }
@@ -86,6 +97,17 @@ const PRESET_CANVASES = {
 
   d2c: {
     title: "Instant Sattu Plant-Protein Drink",
+    previewText: {
+      problem: "Traditional sattu means messy mixing and clumps. Busy professionals skip breakfast or reach for sugary drinks.",
+      solution: "Micro-milled instant formula that shakes in cold water.",
+      valueProposition: "Clean, gut-friendly plant energy ready in 30 seconds. Zero clumps, zero prep mess.",
+      unfairAdvantage: "Proprietary cold-milling process that dissolves in cold water without stabilizers.",
+      customerSegments: "Urban working professionals skipping breakfast. Health-conscious fitness seekers.",
+      keyMetrics: "Second-box repeat rate above 35% in 45 days. CAC to 6-month LTV ratio.",
+      channels: "D2C website with starter packs. Quick commerce on Blinkit, Zepto, Instamart.",
+      costStructure: "Chana procurement and micronized roasting. Sachet packaging.",
+      revenueStreams: "15-pack boxes at ₹499. Monthly subscription with 15% discount."
+    },
     problem: {
       bullets: [
         "Traditional sattu means messy mixing and clumps.",
@@ -165,6 +187,17 @@ const PRESET_CANVASES = {
 
   lawyers: {
     title: "AI Legal Workflow & Contract Audit Studio",
+    previewText: {
+      problem: "Boutique law firms spend 15+ hours weekly on manual redlining and routine NDA reviews.",
+      solution: "1-click automated clause risk scoring and redline suggestion engine.",
+      valueProposition: "Audit and draft airtight commercial contracts 10x faster with private fine-tuned legal AI.",
+      unfairAdvantage: "Proprietary indexed database of 200,000+ negotiated Indian and US commercial contract redlines.",
+      customerSegments: "Boutique corporate law firms with 5 to 25 practicing attorneys.",
+      keyMetrics: "Weekly Active Lawyers auditing at least 5 contracts on the platform.",
+      channels: "Direct outbound demos to managing partners via LinkedIn and Bar Association directories.",
+      costStructure: "SOC-2 Type II compliant cloud GPU hosting and private LLM inference clusters.",
+      revenueStreams: "Per-seat SaaS subscription at ₹12,500 ($149) per attorney per month."
+    },
     problem: {
       bullets: [
         "Boutique law firms spend 15+ hours weekly on manual redlining and routine NDA reviews.",
@@ -244,6 +277,17 @@ const PRESET_CANVASES = {
 
   saas: {
     title: "Edge API Observability & Auto-Healing",
+    previewText: {
+      problem: "Distributed microservices cause hard-to-detect latency spikes and silent 5xx API outages.",
+      solution: "eBPF-powered zero-code telemetry tracking every HTTP and gRPC request automatically.",
+      valueProposition: "Zero-instrumentation edge API observability that detects and auto-mitigates outages in seconds.",
+      unfairAdvantage: "Patented lightweight eBPF kernel tracing engine running with under 0.2% CPU overhead.",
+      customerSegments: "DevOps and Site Reliability Engineers (SREs) at high-scale tech companies.",
+      keyMetrics: "Mean Time to Detection (MTTD) kept under 5 seconds across all monitored endpoints.",
+      channels: "Open-source eBPF collector on GitHub with developer community advocacy.",
+      costStructure: "High-throughput timeseries telemetry ingestion clusters and cold storage.",
+      revenueStreams: "Tiered monthly usage pricing starting at ₹7,999 ($99) per 10 million tracked API calls."
+    },
     problem: {
       bullets: [
         "Distributed microservices cause hard-to-detect latency spikes and silent 5xx API outages.",
@@ -323,13 +367,14 @@ const PRESET_CANVASES = {
 };
 
 export default function CanvasApp({ t }) {
-  const [viewState, setViewState] = useState("result"); // "initial" or "result"
+  // Default to the exact initial UI requested
+  const [viewState, setViewState] = useState("initial"); // "initial" or "result"
   const [isCanvasView, setIsCanvasView] = useState(false); // false = Cards view, true = Canvas view (.cv)
-  const [selectedPresetKey, setSelectedPresetKey] = useState("d2c");
+  const [selectedPresetKey, setSelectedPresetKey] = useState("hyperlocal");
   const [ideaText, setIdeaText] = useState(
     "15-minute delivery of artisan bakery goods and specialty coffee for suburban neighborhoods."
   );
-  const [canvasData, setCanvasData] = useState(PRESET_CANVASES.d2c);
+  const [canvasData, setCanvasData] = useState(PRESET_CANVASES.hyperlocal);
   const [toastMessage, setToastMessage] = useState(null);
 
   const sampleChips = [
@@ -353,7 +398,6 @@ export default function CanvasApp({ t }) {
   }
 
   function handleGenerateCanvas() {
-    // If text matches a preset, pick it; otherwise create a customized lean canvas
     if (PRESET_CANVASES[selectedPresetKey]) {
       setCanvasData(PRESET_CANVASES[selectedPresetKey]);
     }
@@ -404,6 +448,17 @@ export default function CanvasApp({ t }) {
   function handleBlankGrid() {
     const blank = {
       title: "Blank Lean Canvas",
+      previewText: {
+        problem: "Add key problems...",
+        solution: "Add solution features...",
+        valueProposition: "Clear single value proposition...",
+        unfairAdvantage: "Unfair competitive advantage...",
+        customerSegments: "Target customer segments...",
+        keyMetrics: "Key measurable metrics...",
+        channels: "Distribution channels...",
+        costStructure: "Cost breakdown...",
+        revenueStreams: "Revenue and monetization streams..."
+      },
       problem: { bullets: ["Add first key problem...", "Add second key problem...", "Add third key problem..."], note: { label: "Existing alternatives", text: "List current alternative solutions" } },
       customerSegments: { bullets: ["Target persona 1", "Target persona 2", "Target persona 3"], note: { label: "Early adopters", text: "Characteristics of ideal early adopters" } },
       valueProposition: { bullets: ["Single, clear, compelling message that turns an unaware visitor into an interested prospect."], note: { label: "High-level concept", text: "Your X for Y analogy" } },
@@ -415,7 +470,6 @@ export default function CanvasApp({ t }) {
       unfairAdvantage: { bullets: ["Cannot be easily copied or bought by competitors."], note: null }
     };
     setCanvasData(blank);
-    setViewState("result");
     showToast("Created Blank Lean Canvas Grid");
   }
 
@@ -425,7 +479,7 @@ export default function CanvasApp({ t }) {
     const nextKey = keys[(currentIndex + 1) % keys.length];
     setSelectedPresetKey(nextKey);
     setCanvasData(PRESET_CANVASES[nextKey]);
-    setIdeaText(PRESET_CANVASES[nextKey].title);
+    setIdeaText(sampleChips.find(c => c.key === nextKey)?.text || PRESET_CANVASES[nextKey].title);
     showToast(`Loaded Template: ${PRESET_CANVASES[nextKey].title}`);
   }
 
@@ -437,27 +491,42 @@ export default function CanvasApp({ t }) {
     }
   }
 
+  // Get preview snippet strings for the 9-box initial grid
+  const pt = canvasData.previewText || {
+    problem: canvasData.problem.bullets.join(" "),
+    solution: canvasData.solution.bullets.join(", "),
+    valueProposition: canvasData.valueProposition.bullets.join(" "),
+    unfairAdvantage: canvasData.unfairAdvantage.bullets.join(" "),
+    customerSegments: canvasData.customerSegments.bullets.join(" "),
+    keyMetrics: canvasData.keyMetrics.bullets.join(", "),
+    channels: canvasData.channels.bullets.join(", "),
+    costStructure: canvasData.costStructure.bullets.join(", "),
+    revenueStreams: canvasData.revenueStreams.bullets.join(", ")
+  };
+
   // =========================================================================
-  // VIEW 1: INITIAL PROMPT & COMPACT NINE-BOX PREVIEW SCREEN
+  // VIEW 1: INITIAL PROMPT & COMPACT NINE-BOX PREVIEW SCREEN (MATCHING CLAUDE UI)
   // =========================================================================
   if (viewState === "initial") {
     return (
       <div className="lc">
         {toastMessage && <div className="lc-toast">{toastMessage}</div>}
 
+        {/* Top Header */}
         <div className="lc-top">
           <div className="lc-logo"><i className="ti ti-layout-grid" aria-hidden="true"></i></div>
-          <span style={{ fontWeight: 500, fontSize: "15px" }}>Link Canvas</span>
+          <span style={{ fontWeight: 600, fontSize: "15px" }}>Link Canvas</span>
           <span className="lc-pill">Lean canvas</span>
           <span style={{ marginLeft: "auto", display: "flex", gap: "6px", alignItems: "center" }}>
             <button className="lc-ghost" onClick={handleBlankGrid}><i className="ti ti-layout" aria-hidden="true"></i>Blank grid</button>
             <button className="lc-ghost" onClick={handleCycleTemplates}><i className="ti ti-template" aria-hidden="true"></i>Templates</button>
-            <button className="lc-ghost" aria-label="Close" onClick={handleClose} style={{ width: "30px", padding: 0, justifyContent: "center" }}>
-              <i className="ti ti-x" aria-hidden="true"></i>
+            <button className="lc-ghost" aria-label="More" onClick={handleClose} style={{ width: "30px", padding: 0, justifyContent: "center" }}>
+              <i className="ti ti-dots" aria-hidden="true"></i>
             </button>
           </span>
         </div>
 
+        {/* Prompt Section */}
         <div className="lc-prompt">
           <textarea
             rows={2}
@@ -478,25 +547,15 @@ export default function CanvasApp({ t }) {
               </span>
             ))}
             <button
+              className="lc-btn-generate"
               onClick={handleGenerateCanvas}
-              style={{
-                marginLeft: "auto",
-                height: "32px",
-                fontSize: "13px",
-                background: "var(--text-accent)",
-                color: "var(--surface-2)",
-                borderColor: "transparent",
-                fontWeight: 600,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px"
-              }}
             >
               <i className="ti ti-sparkles" aria-hidden="true"></i>Generate canvas
             </button>
           </div>
         </div>
 
+        {/* 10-Column 9-Box Grid */}
         <div className="lc-grid">
           {/* 1. Problem */}
           <div className="lc-cell" style={{ gridColumn: "span 2", gridRow: "span 2" }}>
@@ -506,7 +565,7 @@ export default function CanvasApp({ t }) {
               Problem
               <span className="lc-ic"><i className="ti ti-refresh" aria-hidden="true"></i><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.problem.bullets.join(" ")}</p>
+            <p className="lc-t">{pt.problem}</p>
           </div>
 
           {/* 4. Solution */}
@@ -517,7 +576,7 @@ export default function CanvasApp({ t }) {
               Solution
               <span className="lc-ic"><i className="ti ti-refresh" aria-hidden="true"></i><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.solution.bullets.join(", ")}</p>
+            <p className="lc-t">{pt.solution}</p>
           </div>
 
           {/* 3. Value proposition */}
@@ -528,7 +587,7 @@ export default function CanvasApp({ t }) {
               Value proposition
               <span className="lc-ic"><i className="ti ti-refresh" aria-hidden="true"></i><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.valueProposition.bullets.join(" ")}</p>
+            <p className="lc-t">{pt.valueProposition}</p>
           </div>
 
           {/* 9. Unfair advantage */}
@@ -539,7 +598,7 @@ export default function CanvasApp({ t }) {
               Unfair advantage
               <span className="lc-ic"><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.unfairAdvantage.bullets.join(" ")}</p>
+            <p className="lc-t">{pt.unfairAdvantage}</p>
           </div>
 
           {/* 2. Customers */}
@@ -550,7 +609,7 @@ export default function CanvasApp({ t }) {
               Customers
               <span className="lc-ic"><i className="ti ti-refresh" aria-hidden="true"></i><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.customerSegments.bullets.join(" ")}</p>
+            <p className="lc-t">{pt.customerSegments}</p>
           </div>
 
           {/* 8. Key metrics */}
@@ -561,7 +620,7 @@ export default function CanvasApp({ t }) {
               Key metrics
               <span className="lc-ic"><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.keyMetrics.bullets.join(", ")}</p>
+            <p className="lc-t">{pt.keyMetrics}</p>
           </div>
 
           {/* 5. Channels */}
@@ -572,7 +631,7 @@ export default function CanvasApp({ t }) {
               Channels
               <span className="lc-ic"><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.channels.bullets.join(", ")}</p>
+            <p className="lc-t">{pt.channels}</p>
           </div>
 
           {/* 7. Cost structure */}
@@ -583,7 +642,7 @@ export default function CanvasApp({ t }) {
               Cost structure
               <span className="lc-ic"><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.costStructure.bullets.join(", ")}</p>
+            <p className="lc-t">{pt.costStructure}</p>
           </div>
 
           {/* 6. Revenue streams */}
@@ -594,34 +653,25 @@ export default function CanvasApp({ t }) {
               Revenue streams
               <span className="lc-ic"><i className="ti ti-pencil" aria-hidden="true"></i></span>
             </div>
-            <p className="lc-t">{canvasData.revenueStreams.bullets.join(", ")}</p>
+            <p className="lc-t">{pt.revenueStreams}</p>
           </div>
         </div>
 
+        {/* Footer */}
         <div className="lc-foot">
-          <button
-            onClick={handleAttachToCard}
-            style={{
-              height: "32px",
-              fontSize: "13px",
-              background: "var(--text-primary)",
-              color: "var(--surface-2)",
-              borderColor: "transparent",
-              fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px"
-            }}
-          >
+          <button className="lc-btn-attach" onClick={handleAttachToCard}>
             <i className="ti ti-paperclip" aria-hidden="true"></i>Attach to card
           </button>
-          <button onClick={handleCopyJSON} style={{ height: "32px", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <button className="lc-ghost" onClick={handleCopyJSON} style={{ height: "32px" }}>
             <i className="ti ti-copy" aria-hidden="true"></i>Copy
           </button>
-          <button onClick={handleExport} style={{ height: "32px", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <button className="lc-ghost" onClick={handleExport} style={{ height: "32px" }}>
             <i className="ti ti-download" aria-hidden="true"></i>Export
           </button>
-          <span style={{ marginLeft: "auto", fontSize: "12px", color: "var(--text-secondary)" }}>
+          <button className="lc-btn-icon-round" onClick={handleGenerateCanvas} title="Expand result view">
+            <i className="ti ti-arrow-down" aria-hidden="true"></i>
+          </button>
+          <span style={{ marginLeft: "auto", fontSize: "12px", color: "var(--text-muted)" }}>
             Link Canvas 2.0 · Ash Maurya framework
           </span>
         </div>
@@ -638,7 +688,7 @@ export default function CanvasApp({ t }) {
 
       <div className="lc-bar">
         <i className="ti ti-layout-grid" style={{ fontSize: "18px", color: "var(--text-accent)" }} aria-hidden="true"></i>
-        <span style={{ fontWeight: 500, fontSize: "15px" }}>Link Canvas</span>
+        <span style={{ fontWeight: 600, fontSize: "15px" }}>Link Canvas</span>
         <span className="lc-ok">9 of 9 boxes ready</span>
         <div className="seg" role="group" aria-label="View">
           <button
@@ -851,42 +901,22 @@ export default function CanvasApp({ t }) {
 
       <div className="ft">
         <button
+          className="lc-btn-attach"
           onClick={handleAttachToCard}
-          style={{
-            height: "32px",
-            fontSize: "13px",
-            background: "var(--text-primary)",
-            color: "var(--surface-2)",
-            borderColor: "transparent",
-            fontWeight: 600,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px"
-          }}
         >
           <i className="ti ti-paperclip" aria-hidden="true"></i>Attach to card
         </button>
         <button
+          className="lc-ghost"
           onClick={handleAddAllToList}
-          style={{
-            height: "32px",
-            fontSize: "13px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px"
-          }}
+          style={{ height: "32px" }}
         >
           <i className="ti ti-layout-list" aria-hidden="true"></i>Add all to list
         </button>
         <button
+          className="lc-ghost"
           onClick={() => setViewState("initial")}
-          style={{
-            height: "32px",
-            fontSize: "13px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px"
-          }}
+          style={{ height: "32px" }}
         >
           <i className="ti ti-refresh" aria-hidden="true"></i>Regenerate
         </button>

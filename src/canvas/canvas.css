@@ -1,23 +1,27 @@
 :root {
   --surface-1: #161a1f;
-  --surface-2: #20262e;
-  --surface-3: #2a323d;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --border-accent: #7f77dd;
-  --bg-accent: rgba(127, 119, 221, 0.15);
-  --text-accent: #a59ef5;
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --bg-success: rgba(29, 158, 117, 0.18);
-  --text-success: #34d399;
+  --surface-2: #1e242c;
+  --surface-3: #28303a;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-accent: #388bfd;
+  --bg-accent: rgba(56, 139, 253, 0.15);
+  --text-accent: #58a6ff;
+  --text-primary: #f0f6fc;
+  --text-secondary: #919eab;
+  --text-muted: #637381;
+  --bg-success: rgba(46, 160, 67, 0.18);
+  --text-success: #3fb950;
+  --btn-primary-bg: #58a6ff;
+  --btn-primary-text: #0d1117;
+  --attach-btn-bg: #e6edf3;
+  --attach-btn-text: #0d1117;
 }
 
 body {
   margin: 0;
-  padding: 12px;
-  background: #0f1318;
+  padding: 14px;
+  background: #0d1117;
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -34,7 +38,7 @@ button {
 }
 
 button:hover {
-  filter: brightness(1.15);
+  filter: brightness(1.12);
   border-color: var(--border-strong);
 }
 
@@ -43,16 +47,16 @@ button:active {
 }
 
 /* =========================================================================
-   CONTAINER & COMMON STYLES
+   CONTAINER
    ========================================================================= */
 .lc {
   background: var(--surface-1);
   border-radius: 12px;
   padding: 14px;
   font-size: 13px;
-  max-width: 1100px;
+  max-width: 1060px;
   margin: 0 auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
   border: 0.5px solid var(--border);
   box-sizing: border-box;
 }
@@ -69,8 +73,8 @@ button:active {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: var(--bg-accent);
-  color: var(--text-accent);
+  background: #1f3a5f;
+  color: #58a6ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,10 +83,12 @@ button:active {
 
 .lc-pill {
   font-size: 12px;
-  padding: 2px 8px;
+  font-weight: 500;
+  padding: 2px 10px;
   border-radius: 999px;
-  background: var(--bg-accent);
-  color: var(--text-accent);
+  background: #1c2b42;
+  color: #58a6ff;
+  border: 0.5px solid rgba(88, 166, 255, 0.25);
 }
 
 .lc-ghost {
@@ -92,17 +98,17 @@ button:active {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: transparent;
+  background: var(--surface-2);
   border: 0.5px solid var(--border);
   color: var(--text-secondary);
 }
 
 .lc-ghost:hover {
-  background: var(--surface-2);
+  background: var(--surface-3);
   color: var(--text-primary);
 }
 
-/* PROMPT BOX */
+/* PROMPT SECTION */
 .lc-prompt {
   background: var(--surface-2);
   border: 0.5px solid var(--border-strong);
@@ -119,7 +125,7 @@ button:active {
   font-size: 13.5px;
   line-height: 1.5;
   padding: 0;
-  min-height: 44px;
+  min-height: 42px;
   outline: none;
   box-shadow: none;
   color: var(--text-primary);
@@ -152,17 +158,43 @@ button:active {
   transition: all 0.15s ease;
 }
 
-.lc-chip:hover, .lc-chip.active {
-  background: var(--bg-accent);
-  color: var(--text-accent);
-  border-color: var(--border-accent);
+.lc-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
 }
 
-/* INITIAL 9-BOX COMPACT GRID */
+.lc-chip.active {
+  background: var(--surface-3);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+.lc-btn-generate {
+  margin-left: auto;
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+
+.lc-btn-generate:hover {
+  filter: brightness(1.1);
+  background: #79b8ff;
+}
+
+/* 9-BOX COMPACT GRID */
 .lc-grid {
   display: grid;
   grid-template-columns: repeat(10, minmax(0, 1fr));
-  grid-template-rows: repeat(2, 112px) 84px;
+  grid-template-rows: repeat(2, 114px) 86px;
   gap: 8px;
 }
 
@@ -170,7 +202,7 @@ button:active {
   background: var(--surface-2);
   border: 0.5px solid var(--border);
   border-radius: 8px;
-  padding: 8px 9px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -248,6 +280,43 @@ button:active {
   gap: 8px;
   margin-top: 12px;
   flex-wrap: wrap;
+}
+
+.lc-btn-attach {
+  height: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--attach-btn-bg);
+  color: var(--attach-btn-text);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+
+.lc-btn-attach:hover {
+  background: #ffffff;
+}
+
+.lc-btn-icon-round {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 0.5px solid var(--border);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  padding: 0;
+}
+
+.lc-btn-icon-round:hover {
+  background: var(--surface-3);
+  color: var(--text-primary);
 }
 
 /* =========================================================================
@@ -462,7 +531,7 @@ button:active {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #252d38;
+  background: #20262e;
   color: #f7f8f9;
   border: 1px solid var(--border-accent);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
