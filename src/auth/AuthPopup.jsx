@@ -82,7 +82,7 @@ export default function AuthPopup({ t }) {
     if (t && typeof t.modal === "function") {
       t.modal({
         url: "./canvas.html",
-        accentColor: "#8546ff",
+        accentColor: "#181d22",
         fullscreen: false,
         title: "Link Canvas",
       });
