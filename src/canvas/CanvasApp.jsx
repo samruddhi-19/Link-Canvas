@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import "./canvas.css";
 import {
   generateLeanCanvasAI,
-  regenerateSingleBoxAI
+  regenerateSingleBoxAI,
+  getGeminiApiKey,
+  setGeminiApiKey
 } from "../lib/aiDraftService.js";
 
 // =========================================================================
@@ -100,18 +102,25 @@ const Grid = ({ size = 13 }) => (
   </svg>
 );
 
-const Sparkles = ({ size = 14 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+const Sparkles = ({ size = 14, className = "" }) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
   </svg>
 );
 
-const RefreshCw = ({ size = 12 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+const RefreshCw = ({ size = 12, className = "" }) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
     <path d="M21 3v5h-5" />
     <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
     <path d="M8 16H3v5" />
+  </svg>
+);
+
+const KeyRound = ({ size = 13 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/>
+    <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
   </svg>
 );
 
@@ -233,6 +242,13 @@ export default function CanvasApp({ t }) {
   const [toastMessage, setToastMessage] = useState(null);
   const [regeneratingBox, setRegeneratingBox] = useState(null);
 
+  // Re-draft & AI state tracking
+  const [draftCount, setDraftCount] = useState(0);
+  const [boxRegenCounts, setBoxRegenCounts] = useState({});
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState(getGeminiApiKey());
+  const [hasApiKey, setHasApiKey] = useState(!!getGeminiApiKey());
+
   useEffect(() => {
     if (t && typeof t.get === "function") {
       t.get("member", "private", "lcLook")
@@ -254,9 +270,10 @@ export default function CanvasApp({ t }) {
     function handleKeyDown(e) {
       if (e.key === "Escape") {
         setIsLookPickerOpen(false);
+        setIsApiKeyModalOpen(false);
       }
     }
-    if (isLookPickerOpen) {
+    if (isLookPickerOpen || isApiKeyModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -264,7 +281,7 @@ export default function CanvasApp({ t }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLookPickerOpen]);
+  }, [isLookPickerOpen, isApiKeyModalOpen]);
 
   function handleSelectLook(lookKey) {
     setCurrentLook(lookKey);
@@ -284,6 +301,14 @@ export default function CanvasApp({ t }) {
     if (promptError) setPromptError("");
   }
 
+  function handleSaveApiKey() {
+    const trimmed = apiKeyInput.trim();
+    setGeminiApiKey(trimmed);
+    setHasApiKey(!!trimmed);
+    setIsApiKeyModalOpen(false);
+    showToast(trimmed ? "🔑 Gemini API Key saved!" : "Switched to Gemini Smart Engine");
+  }
+
   async function handleGenerateCanvas() {
     const trimmedPrompt = ideaPrompt.trim();
     if (!trimmedPrompt) {
@@ -294,18 +319,25 @@ export default function CanvasApp({ t }) {
     setIsLoading(true);
     setIsGenerated(false);
     setRevealedCount(0);
-    setLoadingStageText("🧠 Gemini is analyzing startup idea & market context...");
+
+    const nextIteration = isGenerated || draftCount > 0 ? draftCount + 1 : 0;
+    setDraftCount(nextIteration);
+
+    setLoadingStageText(nextIteration > 0
+      ? `🔄 Gemini synthesizing Draft #${nextIteration + 1} with alternative strategic angle...`
+      : "🧠 Gemini is analyzing startup idea & market context..."
+    );
 
     const stageTimer1 = setTimeout(() => {
       setLoadingStageText("⚡ Gemini is synthesizing problems, UVP & solutions...");
     }, 900);
     const stageTimer2 = setTimeout(() => {
       setLoadingStageText("📊 Gemini is structuring metrics, channels & financials...");
-    }, 2200);
+    }, 2000);
 
     try {
-      // Call Google Gemini AI
-      const aiResult = await generateLeanCanvasAI(trimmedPrompt);
+      // Call Google Gemini AI with iteration count
+      const aiResult = await generateLeanCanvasAI(trimmedPrompt, nextIteration);
 
       clearTimeout(stageTimer1);
       clearTimeout(stageTimer2);
@@ -322,9 +354,9 @@ export default function CanvasApp({ t }) {
           setIsLoading(false);
           setIsGenerated(true);
           setLoadingStageText("");
-          showToast("✨ Generated 9-box Lean Canvas with Gemini AI!");
+          showToast(nextIteration > 0 ? `✨ Generated Draft #${nextIteration + 1} with Gemini AI!` : "✨ Generated 9-box Lean Canvas with Gemini AI!");
         }
-      }, 110);
+      }, 100);
     } catch (err) {
       clearTimeout(stageTimer1);
       clearTimeout(stageTimer2);
@@ -341,7 +373,10 @@ export default function CanvasApp({ t }) {
     showToast(`✨ Regenerating ${boxKey} with Gemini AI...`);
 
     try {
-      const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt);
+      const nextBoxIter = (boxRegenCounts[boxKey] || 0) + 1;
+      setBoxRegenCounts(prev => ({ ...prev, [boxKey]: nextBoxIter }));
+
+      const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt, nextBoxIter);
       if (newItems) {
         const keyMap = {
           "Problem": "problem",
@@ -374,14 +409,11 @@ export default function CanvasApp({ t }) {
     setIsGenerated(false);
     setIsLoading(false);
     setRevealedCount(0);
+    setDraftCount(0);
+    setBoxRegenCounts({});
     setPromptError("");
     setActiveCanvas(EMPTY_CANVAS);
-    setBoardCards([
-      { id: "c1", title: "Database schema update", box: "Problem" },
-      { id: "c2", title: "Fix login bug", box: null },
-      { id: "c3", title: "Implement export feature", box: null },
-      { id: "c4", title: "Design dashboard UI", box: null },
-    ]);
+    setBoardCards(INITIAL_BOARD_CARDS);
     showToast("Canvas reset to empty state");
   }
 
@@ -462,7 +494,7 @@ export default function CanvasApp({ t }) {
                 title={`Regenerate ${title} with Gemini AI`}
                 onClick={(e) => handleRegenerateSingleBox(e, title)}
               >
-                <RefreshCw size={11} />
+                <RefreshCw size={11} className={isRegenerating ? "spin-pulse" : ""} />
               </button>
             )}
             <span className="box-num">{boxNum}</span>
@@ -509,17 +541,35 @@ export default function CanvasApp({ t }) {
       <div className="lc-exact-header">
         <div className="header-left-title">
           <span className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}>
-            {isLoading ? <Sparkles size={13} /> : <Grid size={13} />}
+            {isLoading ? <Sparkles size={13} className="spin-pulse" /> : <Grid size={13} />}
             <span>
-              {isLoading ? `Gemini drafting ${revealedCount} of 9…` : isGenerated ? "Gemini AI · 9 of 9 ready" : "Lean canvas · empty"}
+              {isLoading
+                ? `Gemini drafting ${revealedCount} of 9…`
+                : isGenerated
+                ? `Gemini AI · Draft #${draftCount + 1} ready`
+                : "Lean canvas · empty"}
             </span>
           </span>
-          <span className="ai-model-tag-pill">
-            <Sparkles size={11} /> Gemini 1.5 Flash
-          </span>
+          <button
+            type="button"
+            className="ai-model-tag-pill clickable-pill"
+            onClick={() => setIsApiKeyModalOpen(true)}
+            title="Configure Google Gemini API Key"
+          >
+            <Sparkles size={11} /> {hasApiKey ? "Gemini 1.5 Flash (Live)" : "Gemini Engine"}
+          </button>
         </div>
 
         <div className="header-right-tools" ref={lookPickerRef} style={{ position: "relative" }}>
+          <button
+            className="btn-header-apikey"
+            onClick={() => setIsApiKeyModalOpen(true)}
+            title="Configure Gemini API Key"
+          >
+            <KeyRound size={13} />
+            <span>API Key</span>
+          </button>
+
           <button className="btn-header-reset" onClick={handleReset}>
             {isGenerated ? "Clear Canvas" : "Reset"}
           </button>
@@ -578,6 +628,68 @@ export default function CanvasApp({ t }) {
         </div>
       </div>
 
+      {/* Gemini API Key Configuration Modal */}
+      {isApiKeyModalOpen && (
+        <div className="lc-modal-overlay" onClick={() => setIsApiKeyModalOpen(false)}>
+          <div className="lc-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title-wrap">
+                <Sparkles size={16} className="modal-title-icon" />
+                <h3>Google Gemini AI Settings</h3>
+              </div>
+              <button
+                type="button"
+                className="btn-modal-close"
+                onClick={() => setIsApiKeyModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="modal-subtext">
+                Link Canvas uses Google Gemini 1.5 Flash to dynamically draft and re-draft 9-box Lean Canvases for any startup concept.
+              </p>
+              <div className="api-key-input-wrap">
+                <label htmlFor="gemini-key-input">Gemini API Key (Optional)</label>
+                <input
+                  id="gemini-key-input"
+                  type="password"
+                  placeholder="AIzaSy..."
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                />
+                <div className="api-key-hint">
+                  Free tier available from Google AI Studio (1,500 requests/day). If left blank, the built-in intelligent multi-angle engine is used.
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              {hasApiKey && (
+                <button
+                  type="button"
+                  className="btn-modal-clear"
+                  onClick={() => {
+                    setApiKeyInput("");
+                    setGeminiApiKey("");
+                    setHasApiKey(false);
+                    showToast("Switched to built-in Gemini Smart Engine");
+                  }}
+                >
+                  Clear Key
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn-modal-save"
+                onClick={handleSaveApiKey}
+              >
+                Save & Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Grid: Left Sidebar + 9-Box Matrix */}
       <div className="lc-exact-main-grid">
         {/* Left Sidebar */}
@@ -605,7 +717,9 @@ export default function CanvasApp({ t }) {
               <div className={`ai-draft-textarea-box ${promptError ? "has-error" : ""}`}>
                 <div className="textarea-header-label">
                   <span>Describe your startup or product idea</span>
-                  <span className="ai-badge-sub">Gemini AI</span>
+                  <span className="ai-badge-sub">
+                    {draftCount > 0 ? `Draft #${draftCount + 1}` : "Gemini AI"}
+                  </span>
                 </div>
                 <textarea
                   value={ideaPrompt}
@@ -651,7 +765,11 @@ export default function CanvasApp({ t }) {
                 disabled={isLoading}
               >
                 <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
-                {isLoading ? `Drafting with Gemini (${revealedCount}/9)…` : isGenerated ? "Re-draft with Gemini" : "Draft with Gemini"}
+                {isLoading
+                  ? `Drafting with Gemini (${revealedCount}/9)…`
+                  : isGenerated
+                  ? `Re-draft with Gemini (Angle #${((draftCount + 1) % 4) + 1})`
+                  : "Draft with Gemini"}
               </button>
             </div>
           ) : (
