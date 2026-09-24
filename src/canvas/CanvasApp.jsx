@@ -2,14 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import "./canvas.css";
 import {
   generateLeanCanvasAI,
-  regenerateSingleBoxAI,
-  getStoredAIConfig,
-  saveStoredAIConfig,
-  AI_PROVIDERS
+  regenerateSingleBoxAI
 } from "../lib/aiDraftService.js";
 
 // =========================================================================
-// PHASE 2 ICONS (Lucide 14px in 20px chips with 6px radius)
+// ICONS (14px Lucide-style)
 // =========================================================================
 const Palette = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -106,20 +103,6 @@ const Grid = ({ size = 13 }) => (
 const Sparkles = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-  </svg>
-);
-
-const SettingsSliders = ({ size = 14 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <line x1="4" x2="4" y1="21" y2="14" />
-    <line x1="4" x2="4" y1="10" y2="3" />
-    <line x1="12" x2="12" y1="21" y2="12" />
-    <line x1="12" x2="12" y1="8" y2="3" />
-    <line x1="20" x2="20" y1="21" y2="16" />
-    <line x1="20" x2="20" y1="12" y2="3" />
-    <line x1="1" x2="7" y1="14" y2="14" />
-    <line x1="9" x2="15" y1="8" y2="8" />
-    <line x1="17" x2="23" y1="16" y2="16" />
   </svg>
 );
 
@@ -250,10 +233,6 @@ export default function CanvasApp({ t }) {
   const [toastMessage, setToastMessage] = useState(null);
   const [regeneratingBox, setRegeneratingBox] = useState(null);
 
-  // AI Configuration Modal
-  const [isAIConfigOpen, setIsAIConfigOpen] = useState(false);
-  const [aiConfig, setAIConfig] = useState(getStoredAIConfig());
-
   useEffect(() => {
     if (t && typeof t.get === "function") {
       t.get("member", "private", "lcLook")
@@ -275,10 +254,9 @@ export default function CanvasApp({ t }) {
     function handleKeyDown(e) {
       if (e.key === "Escape") {
         setIsLookPickerOpen(false);
-        setIsAIConfigOpen(false);
       }
     }
-    if (isLookPickerOpen || isAIConfigOpen) {
+    if (isLookPickerOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -286,7 +264,7 @@ export default function CanvasApp({ t }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLookPickerOpen, isAIConfigOpen]);
+  }, [isLookPickerOpen]);
 
   function handleSelectLook(lookKey) {
     setCurrentLook(lookKey);
@@ -316,28 +294,25 @@ export default function CanvasApp({ t }) {
     setIsLoading(true);
     setIsGenerated(false);
     setRevealedCount(0);
-    setLoadingStageText("🧠 Thinking & structuring Ash Maurya Lean Canvas...");
+    setLoadingStageText("🧠 Gemini is analyzing startup idea & market context...");
 
-    // Staged feedback messages
     const stageTimer1 = setTimeout(() => {
-      setLoadingStageText("⚡ Analyzing problems, UVP & target customers...");
+      setLoadingStageText("⚡ Gemini is synthesizing problems, UVP & solutions...");
     }, 900);
     const stageTimer2 = setTimeout(() => {
-      setLoadingStageText("📊 Generating channels, metrics & revenue streams...");
+      setLoadingStageText("📊 Gemini is structuring metrics, channels & financials...");
     }, 2200);
 
     try {
-      // Call actual AI service
-      const aiResult = await generateLeanCanvasAI(trimmedPrompt, aiConfig);
+      // Call Google Gemini AI
+      const aiResult = await generateLeanCanvasAI(trimmedPrompt);
 
       clearTimeout(stageTimer1);
       clearTimeout(stageTimer2);
       setLoadingStageText("✨ Assembling 9 Lean Canvas boxes...");
 
-      // Update state with the newly AI-generated data
       setActiveCanvas(aiResult);
 
-      // Smooth sequential reveal animation (1 to 9 boxes)
       let count = 0;
       const interval = setInterval(() => {
         count++;
@@ -347,14 +322,14 @@ export default function CanvasApp({ t }) {
           setIsLoading(false);
           setIsGenerated(true);
           setLoadingStageText("");
-          showToast("✨ AI generated 9-box Lean Canvas successfully!");
+          showToast("✨ Generated 9-box Lean Canvas with Gemini AI!");
         }
       }, 110);
     } catch (err) {
       clearTimeout(stageTimer1);
       clearTimeout(stageTimer2);
       setIsLoading(false);
-      setPromptError(err.message || "Failed to generate canvas with AI");
+      setPromptError(err.message || "Failed to generate canvas with Gemini AI");
       showToast("⚠️ Generation error. Please try again.");
     }
   }
@@ -363,10 +338,10 @@ export default function CanvasApp({ t }) {
     e.stopPropagation();
     if (!isGenerated || isLoading) return;
     setRegeneratingBox(boxKey);
-    showToast(`✨ Regenerating ${boxKey} with AI...`);
+    showToast(`✨ Regenerating ${boxKey} with Gemini AI...`);
 
     try {
-      const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt, aiConfig);
+      const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt);
       if (newItems) {
         const keyMap = {
           "Problem": "problem",
@@ -453,13 +428,6 @@ export default function CanvasApp({ t }) {
     }
   }
 
-  function handleSaveAIConfig(newConfig) {
-    setAIConfig(newConfig);
-    saveStoredAIConfig(newConfig);
-    setIsAIConfigOpen(false);
-    showToast("AI configuration saved!");
-  }
-
   const filteredCards = boardCards.filter(c =>
     c.title.toLowerCase().includes(searchCardsText.toLowerCase())
   );
@@ -491,7 +459,7 @@ export default function CanvasApp({ t }) {
               <button
                 type="button"
                 className={`btn-box-ai-regen ${isRegenerating ? "spinning" : ""}`}
-                title={`Regenerate ${title} with AI`}
+                title={`Regenerate ${title} with Gemini AI`}
                 onClick={(e) => handleRegenerateSingleBox(e, title)}
               >
                 <RefreshCw size={11} />
@@ -543,26 +511,15 @@ export default function CanvasApp({ t }) {
           <span className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}>
             {isLoading ? <Sparkles size={13} /> : <Grid size={13} />}
             <span>
-              {isLoading ? `AI drafting ${revealedCount} of 9…` : isGenerated ? "AI Drafted · 9 of 9 ready" : "Lean canvas · empty"}
+              {isLoading ? `Gemini drafting ${revealedCount} of 9…` : isGenerated ? "Gemini AI · 9 of 9 ready" : "Lean canvas · empty"}
             </span>
           </span>
-          {isGenerated && (
-            <span className="ai-model-tag-pill">
-              ✨ {AI_PROVIDERS.find(p => p.id === aiConfig.provider)?.name || "Link Canvas AI"}
-            </span>
-          )}
+          <span className="ai-model-tag-pill">
+            <Sparkles size={11} /> Gemini 1.5 Flash
+          </span>
         </div>
 
         <div className="header-right-tools" ref={lookPickerRef} style={{ position: "relative" }}>
-          <button
-            className="btn-header-ai-config"
-            title="AI Model & API Key Settings"
-            onClick={() => setIsAIConfigOpen(true)}
-          >
-            <SettingsSliders size={13} />
-            <span>AI Settings</span>
-          </button>
-
           <button className="btn-header-reset" onClick={handleReset}>
             {isGenerated ? "Clear Canvas" : "Reset"}
           </button>
@@ -632,7 +589,7 @@ export default function CanvasApp({ t }) {
               onClick={() => setActiveTab("ai")}
             >
               <Sparkles size={12} style={{ marginRight: 4 }} />
-              Draft with AI
+              Draft with Gemini
             </button>
             <button
               className={activeTab === "cards" ? "active" : ""}
@@ -648,7 +605,7 @@ export default function CanvasApp({ t }) {
               <div className={`ai-draft-textarea-box ${promptError ? "has-error" : ""}`}>
                 <div className="textarea-header-label">
                   <span>Describe your startup or product idea</span>
-                  <span className="ai-badge-sub">Live AI Engine</span>
+                  <span className="ai-badge-sub">Gemini AI</span>
                 </div>
                 <textarea
                   value={ideaPrompt}
@@ -694,7 +651,7 @@ export default function CanvasApp({ t }) {
                 disabled={isLoading}
               >
                 <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
-                {isLoading ? `Drafting with AI (${revealedCount}/9)…` : isGenerated ? "Re-draft with AI" : "Draft with AI"}
+                {isLoading ? `Drafting with Gemini (${revealedCount}/9)…` : isGenerated ? "Re-draft with Gemini" : "Draft with Gemini"}
               </button>
             </div>
           ) : (
@@ -738,9 +695,9 @@ export default function CanvasApp({ t }) {
             <div className="callout-sparkle-chip">
               <Sparkles size={14} />
             </div>
-            <div className="callout-title">Draft with AI in Seconds</div>
+            <div className="callout-title">Draft with Gemini AI</div>
             <div className="callout-desc">
-              Type your startup idea on the left and click <strong>Draft with AI</strong>. All 9 Lean Canvas boxes will be dynamically synthesized!
+              Type your startup idea on the left and click <strong>Draft with Gemini</strong>. All 9 Lean Canvas boxes will be dynamically synthesized!
             </div>
           </div>
 
@@ -772,125 +729,6 @@ export default function CanvasApp({ t }) {
           {renderBox("Revenue streams", 6, 6, "span-revenue", "icon-badge-revenue", Banknote, "Revenue streams", activeCanvas.revenueStreams, "Pricing and monetization")}
         </div>
       </div>
-
-      {/* AI Settings Modal */}
-      {isAIConfigOpen && (
-        <div className="lc-modal-backdrop" onClick={() => setIsAIConfigOpen(false)}>
-          <div className="lc-modal-dialog" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-dialog-header">
-              <div className="modal-header-icon-title">
-                <Sparkles size={16} color="#8546ff" />
-                <h3>AI Drafting Settings</h3>
-              </div>
-              <button
-                type="button"
-                className="modal-dialog-close"
-                onClick={() => setIsAIConfigOpen(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="modal-dialog-body">
-              <p className="modal-body-subtext">
-                Choose your AI engine for generating Lean Canvas boxes.
-              </p>
-
-              <div className="ai-provider-list">
-                {AI_PROVIDERS.map((provider) => (
-                  <label
-                    key={provider.id}
-                    className={`ai-provider-card ${aiConfig.provider === provider.id ? "selected" : ""}`}
-                  >
-                    <input
-                      type="radio"
-                      name="ai-provider"
-                      value={provider.id}
-                      checked={aiConfig.provider === provider.id}
-                      onChange={() => setAIConfig({ ...aiConfig, provider: provider.id })}
-                    />
-                    <div className="provider-info">
-                      <div className="provider-title-row">
-                        <span className="provider-name">{provider.name}</span>
-                        {provider.badge && <span className="provider-badge-free">{provider.badge}</span>}
-                      </div>
-                      <span className="provider-desc">{provider.desc}</span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-
-              {aiConfig.provider === "gemini" && (
-                <div className="api-key-input-group">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <label>Google Gemini API Key (100% Free)</label>
-                    <a
-                      href="https://aistudio.google.com/app/apikey"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ fontSize: "11px", color: "#579DFF", textDecoration: "none", fontWeight: 600 }}
-                    >
-                      Get Free Key (Google AI Studio) ↗
-                    </a>
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="AIzaSy..."
-                    value={aiConfig.geminiKey || ""}
-                    onChange={(e) => setAIConfig({ ...aiConfig, geminiKey: e.target.value })}
-                  />
-                  <small style={{ color: "var(--lc-text-muted)", fontSize: "11px", lineHeight: "1.4" }}>
-                    {aiConfig.geminiKey?.trim()
-                      ? "✅ Connected! Using your free Google Gemini 1.5 Flash quota (1,500 requests/day)."
-                      : "💡 Free forever with Google AI Studio. If left blank, Link Canvas uses instant AI automatically."}
-                  </small>
-                </div>
-              )}
-
-              {aiConfig.provider === "openai" && (
-                <div className="api-key-input-group">
-                  <label>OpenAI API Key</label>
-                  <input
-                    type="password"
-                    placeholder="sk-proj-..."
-                    value={aiConfig.openaiKey || ""}
-                    onChange={(e) => setAIConfig({ ...aiConfig, openaiKey: e.target.value })}
-                  />
-                </div>
-              )}
-
-              {aiConfig.provider === "groq" && (
-                <div className="api-key-input-group">
-                  <label>Groq API Key</label>
-                  <input
-                    type="password"
-                    placeholder="gsk_..."
-                    value={aiConfig.groqKey || ""}
-                    onChange={(e) => setAIConfig({ ...aiConfig, groqKey: e.target.value })}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="modal-dialog-footer">
-              <button
-                type="button"
-                className="btn-modal-cancel"
-                onClick={() => setIsAIConfigOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn-modal-save"
-                onClick={() => handleSaveAIConfig(aiConfig)}
-              >
-                Save Preferences
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
