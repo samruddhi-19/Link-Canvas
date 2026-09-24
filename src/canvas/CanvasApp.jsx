@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./canvas.css";
+import {
+  generateLeanCanvasAI,
+  regenerateSingleBoxAI,
+  getStoredAIConfig,
+  saveStoredAIConfig,
+  AI_PROVIDERS
+} from "../lib/aiDraftService.js";
 
 // =========================================================================
 // PHASE 2 ICONS (Lucide 14px in 20px chips with 6px radius)
@@ -13,6 +20,7 @@ const Palette = ({ size = 14 }) => (
     <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
   </svg>
 );
+
 const AlertTriangle = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
@@ -101,6 +109,29 @@ const Sparkles = ({ size = 14 }) => (
   </svg>
 );
 
+const SettingsSliders = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="4" x2="4" y1="21" y2="14" />
+    <line x1="4" x2="4" y1="10" y2="3" />
+    <line x1="12" x2="12" y1="21" y2="12" />
+    <line x1="12" x2="12" y1="8" y2="3" />
+    <line x1="20" x2="20" y1="21" y2="16" />
+    <line x1="20" x2="20" y1="12" y2="3" />
+    <line x1="1" x2="7" y1="14" y2="14" />
+    <line x1="9" x2="15" y1="8" y2="8" />
+    <line x1="17" x2="23" y1="16" y2="16" />
+  </svg>
+);
+
+const RefreshCw = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+    <path d="M8 16H3v5" />
+  </svg>
+);
+
 const Scale = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
@@ -134,166 +165,44 @@ const Rocket = ({ size = 14 }) => (
   </svg>
 );
 
-// =========================================================================
-// PRESET STARTUP DATA (ASH MAURYA LEAN CANVAS)
-// =========================================================================
-const PRESET_IDEAS = {
-  hyperlocal: {
+// Quick starter prompt inspirations
+const INSPIRATION_IDEAS = [
+  {
     key: "hyperlocal",
     label: "Hyperlocal delivery",
     icon: Rocket,
-    text: "15-minute delivery of artisan bakery goods and specialty coffee for suburban neighborhoods.",
-    problem: [
-      "Good bakeries are far from suburbs.",
-      "Delivery arrives cold and late.",
-      "No fresh coffee on demand."
-    ],
-    solution: [
-      "Micro-hubs with warming stations.",
-      "Curated morning drop menus.",
-      "1-tap recurring breakfast app."
-    ],
-    keyMetrics: [
-      "Delivery time under 14 mins.",
-      "30-day repeat order rate > 42%."
-    ],
-    uvp: "Oven-fresh bread and barista coffee at your door in under 15 minutes.",
-    unfairAdvantage: "Exclusive suburban distribution contracts with top 5 artisan bakeries.",
-    channels: [
-      "Direct mobile ordering app.",
-      "Neighborhood WhatsApp groups.",
-      "Co-branded bakery packaging."
-    ],
-    customerSegments: [
-      "Suburban remote workers wanting fresh morning pastries.",
-      "Suburban families hosting weekend brunches."
-    ],
-    costStructure: [
-      "Hub rent, warming lockers.",
-      "App hosting & courier compensation."
-    ],
-    revenueStreams: [
-      "Delivery fee + markup on bakery items.",
-      "Monthly Morning Pass subscription."
-    ]
+    text: "15-minute delivery of artisan bakery goods and specialty coffee for suburban neighborhoods."
   },
-
-  d2c: {
+  {
     key: "d2c",
-    label: "D2C food brand",
+    label: "D2C health brand",
     icon: ShoppingBag,
-    text: "An instant flavored sattu drink for busy urban professionals looking for clean morning plant nutrition.",
-    problem: [
-      "Traditional sattu means messy mixing and clumps.",
-      "Busy professionals skip breakfast or grab sugary drinks.",
-      "Protein shakes cause digestive bloating."
-    ],
-    solution: [
-      "Micro-milled instant formula shakes in cold water.",
-      "Natural flavors: Jeera Masala, Sweet Cardamom.",
-      "Single-serve pocket sachets + shaker ball."
-    ],
-    keyMetrics: [
-      "Second-box repeat rate > 35% in 45 days.",
-      "CAC to 6-month LTV ratio (> 3.5x)."
-    ],
-    uvp: "Clean, gut-friendly plant energy ready in 30 seconds. Zero clumps, zero prep mess.",
-    unfairAdvantage: "Proprietary cold-milling process that dissolves in cold water without stabilizers.",
-    channels: [
-      "D2C website with starter trial packs.",
-      "Quick commerce on Blinkit, Zepto, Instamart."
-    ],
-    customerSegments: [
-      "Urban working professionals skipping breakfast.",
-      "Health-conscious fitness seekers wanting clean protein."
-    ],
-    costStructure: [
-      "Chana procurement & micronized roasting.",
-      "Moisture-barrier sachet packaging."
-    ],
-    revenueStreams: [
-      "15-pack boxes at ₹499.",
-      "Monthly subscription with 15% discount."
-    ]
+    text: "Instant flavored clean plant nutrition sattu drink for busy urban professionals."
   },
-
-  lawyers: {
+  {
     key: "lawyers",
-    label: "AI for lawyers",
+    label: "AI legal assistant",
     icon: Scale,
-    text: "An AI-powered workspace for boutique corporate law firms to draft and audit contracts 10x faster.",
-    problem: [
-      "Boutique law firms spend 15+ hrs/week on routine contract redlines.",
-      "Junior associate turnover is high from tedious NDA reviews.",
-      "Missed indemnification loopholes in vendor MSAs."
-    ],
-    solution: [
-      "1-click automated clause risk scoring & redlining engine.",
-      "Private firm precedent repository.",
-      "Live Word & Google Docs compliance audit plugin."
-    ],
-    keyMetrics: [
-      "Weekly Active Lawyers auditing 5+ contracts.",
-      "Net Revenue Retention rate > 125%."
-    ],
-    uvp: "Audit and draft airtight commercial contracts 10x faster with fine-tuned legal AI.",
-    unfairAdvantage: "Proprietary indexed database of 200,000+ negotiated commercial contract redlines.",
-    channels: [
-      "Outbound demos to managing partners via LinkedIn.",
-      "Product-led free tier auditing 3 contracts/month."
-    ],
-    customerSegments: [
-      "Boutique corporate law firms (5–25 attorneys).",
-      "In-house legal counsels at fast-growing startups."
-    ],
-    costStructure: [
-      "SOC-2 Type II compliant GPU hosting.",
-      "Legal expert continuous benchmarking."
-    ],
-    revenueStreams: [
-      "Per-seat SaaS subscription at ₹12,500/attorney/mo.",
-      "Enterprise private VPC deployment fee."
-    ]
+    text: "AI workspace for boutique corporate law firms to audit, redline, and draft commercial contracts 10x faster."
   },
-
-  saas: {
+  {
     key: "saas",
-    label: "SaaS platform",
+    label: "Edge API monitor",
     icon: Zap,
-    text: "An all-in-one developer platform for real-time edge API monitoring and automated latency alerting.",
-    problem: [
-      "Distributed microservices cause silent 5xx API outages.",
-      "Teams spend hours digging through noisy Datadog logs.",
-      "SLA breaches cost cloud businesses thousands in churn."
-    ],
-    solution: [
-      "eBPF zero-code telemetry tracking every request.",
-      "AI root cause analyzer identifying failing database queries.",
-      "Automated circuit breaking before user downtime."
-    ],
-    keyMetrics: [
-      "Mean Time to Detection (MTTD) under 5 seconds.",
-      "MRR expansion from organic API traffic growth."
-    ],
-    uvp: "Zero-instrumentation edge API observability that detects and auto-mitigates outages in seconds.",
-    unfairAdvantage: "Patented lightweight eBPF kernel tracing engine running with under 0.2% CPU overhead.",
-    channels: [
-      "Open-source eBPF collector on GitHub.",
-      "AWS, GCP, Kubernetes marketplace 1-click deploys."
-    ],
-    customerSegments: [
-      "DevOps and SREs at high-scale tech companies.",
-      "Backend leads managing distributed microservices."
-    ],
-    costStructure: [
-      "Timeseries telemetry ingestion clusters & storage.",
-      "Developer relations & community support staff."
-    ],
-    revenueStreams: [
-      "Monthly usage pricing starting at ₹7,999 ($99)/10M calls.",
-      "Enterprise SRE tier with dedicated support."
-    ]
+    text: "Zero-instrumentation edge API observability platform that detects microservice outages and automatically fixes latency."
   }
+];
+
+const EMPTY_CANVAS = {
+  problem: [],
+  solution: [],
+  keyMetrics: [],
+  uvp: "",
+  unfairAdvantage: "",
+  channels: [],
+  customerSegments: [],
+  costStructure: [],
+  revenueStreams: []
 };
 
 const HUES = [
@@ -322,22 +231,28 @@ const INITIAL_BOARD_CARDS = [
 ];
 
 export default function CanvasApp({ t }) {
-  const [currentLook, setCurrentLook] = useState("rich"); // "rich" | "icon" | "gradient"
+  const [currentLook, setCurrentLook] = useState("rich");
   const [isLookPickerOpen, setIsLookPickerOpen] = useState(false);
   const lookPickerRef = useRef(null);
 
-  const [activeTab, setActiveTab] = useState("ai"); // "ai" or "cards"
-  const [activeChipKey, setActiveChipKey] = useState("hyperlocal");
-  const [ideaPrompt, setIdeaPrompt] = useState(PRESET_IDEAS.hyperlocal.text);
+  const [activeTab, setActiveTab] = useState("ai");
+  const [activeChipKey, setActiveChipKey] = useState("");
+  const [ideaPrompt, setIdeaPrompt] = useState(INSPIRATION_IDEAS[0].text);
   const [promptError, setPromptError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingStageText, setLoadingStageText] = useState("");
   const [revealedCount, setRevealedCount] = useState(0);
   const [isGenerated, setIsGenerated] = useState(false);
-  const [activeCanvas, setActiveCanvas] = useState(PRESET_IDEAS.hyperlocal);
+  const [activeCanvas, setActiveCanvas] = useState(EMPTY_CANVAS);
   const [boardCards, setBoardCards] = useState(INITIAL_BOARD_CARDS);
   const [searchCardsText, setSearchCardsText] = useState("");
   const [selectedBoxKey, setSelectedBoxKey] = useState("Problem");
   const [toastMessage, setToastMessage] = useState(null);
+  const [regeneratingBox, setRegeneratingBox] = useState(null);
+
+  // AI Configuration Modal
+  const [isAIConfigOpen, setIsAIConfigOpen] = useState(false);
+  const [aiConfig, setAIConfig] = useState(getStoredAIConfig());
 
   useEffect(() => {
     if (t && typeof t.get === "function") {
@@ -360,9 +275,10 @@ export default function CanvasApp({ t }) {
     function handleKeyDown(e) {
       if (e.key === "Escape") {
         setIsLookPickerOpen(false);
+        setIsAIConfigOpen(false);
       }
     }
-    if (isLookPickerOpen) {
+    if (isLookPickerOpen || isAIConfigOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -370,7 +286,7 @@ export default function CanvasApp({ t }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLookPickerOpen]);
+  }, [isLookPickerOpen, isAIConfigOpen]);
 
   function handleSelectLook(lookKey) {
     setCurrentLook(lookKey);
@@ -381,40 +297,102 @@ export default function CanvasApp({ t }) {
 
   function showToast(msg) {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    setTimeout(() => setToastMessage(null), 3200);
   }
 
   function handleSelectChip(item) {
     setActiveChipKey(item.key);
     setIdeaPrompt(item.text);
     if (promptError) setPromptError("");
-    setActiveCanvas(PRESET_IDEAS[item.key]);
   }
 
-  function handleGenerateCanvas() {
-    if (!ideaPrompt.trim()) {
-      setPromptError("Describe your idea first");
+  async function handleGenerateCanvas() {
+    const trimmedPrompt = ideaPrompt.trim();
+    if (!trimmedPrompt) {
+      setPromptError("Describe your startup or product idea first");
       return;
     }
     setPromptError("");
     setIsLoading(true);
     setIsGenerated(false);
     setRevealedCount(0);
+    setLoadingStageText("🧠 Thinking & structuring Ash Maurya Lean Canvas...");
 
-    let count = 0;
-    const interval = setInterval(() => {
-      count++;
-      setRevealedCount(count);
-      if (count >= 9) {
-        clearInterval(interval);
-        setIsLoading(false);
-        setIsGenerated(true);
-        if (PRESET_IDEAS[activeChipKey]) {
-          setActiveCanvas(PRESET_IDEAS[activeChipKey]);
+    // Staged feedback messages
+    const stageTimer1 = setTimeout(() => {
+      setLoadingStageText("⚡ Analyzing problems, UVP & target customers...");
+    }, 900);
+    const stageTimer2 = setTimeout(() => {
+      setLoadingStageText("📊 Generating channels, metrics & revenue streams...");
+    }, 2200);
+
+    try {
+      // Call actual AI service
+      const aiResult = await generateLeanCanvasAI(trimmedPrompt, aiConfig);
+
+      clearTimeout(stageTimer1);
+      clearTimeout(stageTimer2);
+      setLoadingStageText("✨ Assembling 9 Lean Canvas boxes...");
+
+      // Update state with the newly AI-generated data
+      setActiveCanvas(aiResult);
+
+      // Smooth sequential reveal animation (1 to 9 boxes)
+      let count = 0;
+      const interval = setInterval(() => {
+        count++;
+        setRevealedCount(count);
+        if (count >= 9) {
+          clearInterval(interval);
+          setIsLoading(false);
+          setIsGenerated(true);
+          setLoadingStageText("");
+          showToast("✨ AI generated 9-box Lean Canvas successfully!");
         }
-        showToast("✨ Generated 9-box Lean Canvas!");
+      }, 110);
+    } catch (err) {
+      clearTimeout(stageTimer1);
+      clearTimeout(stageTimer2);
+      setIsLoading(false);
+      setPromptError(err.message || "Failed to generate canvas with AI");
+      showToast("⚠️ Generation error. Please try again.");
+    }
+  }
+
+  async function handleRegenerateSingleBox(e, boxKey) {
+    e.stopPropagation();
+    if (!isGenerated || isLoading) return;
+    setRegeneratingBox(boxKey);
+    showToast(`✨ Regenerating ${boxKey} with AI...`);
+
+    try {
+      const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt, aiConfig);
+      if (newItems) {
+        const keyMap = {
+          "Problem": "problem",
+          "Solution": "solution",
+          "Key metrics": "keyMetrics",
+          "Value proposition": "uvp",
+          "Unfair advantage": "unfairAdvantage",
+          "Channels": "channels",
+          "Customers": "customerSegments",
+          "Cost structure": "costStructure",
+          "Revenue streams": "revenueStreams"
+        };
+        const propName = keyMap[boxKey];
+        if (propName) {
+          setActiveCanvas(prev => ({
+            ...prev,
+            [propName]: newItems
+          }));
+          showToast(`✨ Refreshed ${boxKey}!`);
+        }
       }
-    }, 220);
+    } catch (e) {
+      showToast(`⚠️ Could not regenerate ${boxKey}`);
+    } finally {
+      setRegeneratingBox(null);
+    }
   }
 
   function handleReset() {
@@ -422,6 +400,7 @@ export default function CanvasApp({ t }) {
     setIsLoading(false);
     setRevealedCount(0);
     setPromptError("");
+    setActiveCanvas(EMPTY_CANVAS);
     setBoardCards([
       { id: "c1", title: "Database schema update", box: "Problem" },
       { id: "c2", title: "Fix login bug", box: null },
@@ -474,6 +453,13 @@ export default function CanvasApp({ t }) {
     }
   }
 
+  function handleSaveAIConfig(newConfig) {
+    setAIConfig(newConfig);
+    saveStoredAIConfig(newConfig);
+    setIsAIConfigOpen(false);
+    showToast("AI configuration saved!");
+  }
+
   const filteredCards = boardCards.filter(c =>
     c.title.toLowerCase().includes(searchCardsText.toLowerCase())
   );
@@ -482,29 +468,46 @@ export default function CanvasApp({ t }) {
     const isFilled = isGenerated || (isLoading && revealedCount >= orderIndex);
     const isBoxLoading = isLoading && revealedCount < orderIndex;
     const isJustRevealed = isLoading && revealedCount === orderIndex;
+    const isRegenerating = regeneratingBox === boxKey;
+    const hasData = isFilled && ((Array.isArray(content) && content.length > 0) || (typeof content === "string" && content.trim().length > 0));
 
     return (
       <div
-        className={`lc-box-item ${colClass} ${isFilled ? "is-filled" : ""} ${selectedBoxKey === boxKey ? "active-target" : ""}`}
+        className={`lc-box-item ${colClass} ${hasData ? "is-filled" : ""} ${selectedBoxKey === boxKey ? "active-target" : ""}`}
         onClick={() => handleBoxClick(boxKey)}
         onDragOver={handleDragOver}
         onDrop={(e) => handleDrop(e, boxKey)}
       >
         <div className="box-item-header">
-          <div className={`box-icon-badge ${iconBadgeClass}`}>
-            <IconComponent size={14} />
+          <div className="box-header-title-wrap">
+            <div className={`box-icon-badge ${iconBadgeClass}`}>
+              <IconComponent size={14} />
+            </div>
+            <span>{title}</span>
           </div>
-          <span>{title}</span>
-          <span className="box-num">{boxNum}</span>
+
+          <div className="box-header-actions">
+            {isGenerated && (
+              <button
+                type="button"
+                className={`btn-box-ai-regen ${isRegenerating ? "spinning" : ""}`}
+                title={`Regenerate ${title} with AI`}
+                onClick={(e) => handleRegenerateSingleBox(e, title)}
+              >
+                <RefreshCw size={11} />
+              </button>
+            )}
+            <span className="box-num">{boxNum}</span>
+          </div>
         </div>
 
-        {isBoxLoading ? (
+        {isBoxLoading || isRegenerating ? (
           <div className="box-skeleton-bars">
             <div className="skeleton-bar" style={{ width: "85%" }}></div>
             <div className="skeleton-bar" style={{ width: "65%" }}></div>
             <div className="skeleton-bar" style={{ width: "75%" }}></div>
           </div>
-        ) : isFilled ? (
+        ) : hasData ? (
           <div className={`box-item-bullets ${isJustRevealed ? "box-fade-up" : ""}`}>
             <ul>
               {Array.isArray(content) ? (
@@ -538,17 +541,32 @@ export default function CanvasApp({ t }) {
       <div className="lc-exact-header">
         <div className="header-left-title">
           <span className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}>
-            <Grid size={13} />
+            {isLoading ? <Sparkles size={13} /> : <Grid size={13} />}
             <span>
-              {isLoading ? `Drafting ${revealedCount} of 9…` : isGenerated ? "9 of 9 ready" : "Lean canvas · empty"}
+              {isLoading ? `AI drafting ${revealedCount} of 9…` : isGenerated ? "AI Drafted · 9 of 9 ready" : "Lean canvas · empty"}
             </span>
           </span>
+          {isGenerated && (
+            <span className="ai-model-tag-pill">
+              ✨ {AI_PROVIDERS.find(p => p.id === aiConfig.provider)?.name || "Link Canvas AI"}
+            </span>
+          )}
         </div>
 
         <div className="header-right-tools" ref={lookPickerRef} style={{ position: "relative" }}>
-          <button className="btn-header-reset" onClick={handleReset}>
-            {isGenerated ? "Draft again" : "Reset"}
+          <button
+            className="btn-header-ai-config"
+            title="AI Model & API Key Settings"
+            onClick={() => setIsAIConfigOpen(true)}
+          >
+            <SettingsSliders size={13} />
+            <span>AI Settings</span>
           </button>
+
+          <button className="btn-header-reset" onClick={handleReset}>
+            {isGenerated ? "Clear Canvas" : "Reset"}
+          </button>
+
           <button
             className={`btn-header-look ${isLookPickerOpen ? "active" : ""}`}
             onClick={() => setIsLookPickerOpen(!isLookPickerOpen)}
@@ -556,6 +574,7 @@ export default function CanvasApp({ t }) {
             <Palette size={14} />
             <span>Look</span>
           </button>
+
           <button
             className={`btn-header-attach ${isGenerated ? "is-primary" : "is-outline"}`}
             onClick={handleAttach}
@@ -612,7 +631,8 @@ export default function CanvasApp({ t }) {
               className={activeTab === "ai" ? "active" : ""}
               onClick={() => setActiveTab("ai")}
             >
-              AI draft
+              <Sparkles size={12} style={{ marginRight: 4 }} />
+              Draft with AI
             </button>
             <button
               className={activeTab === "cards" ? "active" : ""}
@@ -626,13 +646,17 @@ export default function CanvasApp({ t }) {
           {activeTab === "ai" ? (
             <div className="tab-ai-draft-content">
               <div className={`ai-draft-textarea-box ${promptError ? "has-error" : ""}`}>
+                <div className="textarea-header-label">
+                  <span>Describe your startup or product idea</span>
+                  <span className="ai-badge-sub">Live AI Engine</span>
+                </div>
                 <textarea
                   value={ideaPrompt}
                   onChange={(e) => {
                     setIdeaPrompt(e.target.value);
                     if (promptError) setPromptError("");
                   }}
-                  placeholder="Describe your startup or product idea"
+                  placeholder="e.g. AI-powered micro-accounting for freelance developers that auto-generates tax-ready deductions..."
                   rows={4}
                 />
                 {promptError && (
@@ -640,8 +664,9 @@ export default function CanvasApp({ t }) {
                 )}
               </div>
 
+              <div className="ai-section-subhead">Quick inspiration</div>
               <div className="ai-draft-chips-col">
-                {Object.values(PRESET_IDEAS).map((item) => {
+                {INSPIRATION_IDEAS.map((item) => {
                   const ChipIcon = item.icon || Rocket;
                   return (
                     <div
@@ -656,12 +681,20 @@ export default function CanvasApp({ t }) {
                 })}
               </div>
 
+              {isLoading && loadingStageText && (
+                <div className="ai-generation-stage-bar">
+                  <div className="stage-spinner"></div>
+                  <span>{loadingStageText}</span>
+                </div>
+              )}
+
               <button
-                className={`btn-generate-canvas-exact ${!isGenerated ? "is-primary" : "is-outline"}`}
+                className={`btn-generate-canvas-exact ${!isGenerated ? "is-primary" : "is-outline"} ${isLoading ? "is-loading" : ""}`}
                 onClick={handleGenerateCanvas}
+                disabled={isLoading}
               >
-                <i className="ti ti-sparkles" aria-hidden="true"></i>
-                {isLoading ? `Drafting ${revealedCount} of 9…` : isGenerated ? "Draft again" : "Generate canvas"}
+                <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
+                {isLoading ? `Drafting with AI (${revealedCount}/9)…` : isGenerated ? "Re-draft with AI" : "Draft with AI"}
               </button>
             </div>
           ) : (
@@ -692,7 +725,7 @@ export default function CanvasApp({ t }) {
               </div>
 
               <div className="cards-helper-text">
-                Drag a card onto a box
+                Drag a card onto a box or click to link
               </div>
             </div>
           )}
@@ -705,9 +738,9 @@ export default function CanvasApp({ t }) {
             <div className="callout-sparkle-chip">
               <Sparkles size={14} />
             </div>
-            <div className="callout-title">Start with your idea</div>
+            <div className="callout-title">Draft with AI in Seconds</div>
             <div className="callout-desc">
-              Describe it on the left, then press Generate to draft all 9 boxes.
+              Type your startup idea on the left and click <strong>Draft with AI</strong>. All 9 Lean Canvas boxes will be dynamically synthesized!
             </div>
           </div>
 
@@ -739,6 +772,125 @@ export default function CanvasApp({ t }) {
           {renderBox("Revenue streams", 6, 6, "span-revenue", "icon-badge-revenue", Banknote, "Revenue streams", activeCanvas.revenueStreams, "Pricing and monetization")}
         </div>
       </div>
+
+      {/* AI Settings Modal */}
+      {isAIConfigOpen && (
+        <div className="lc-modal-backdrop" onClick={() => setIsAIConfigOpen(false)}>
+          <div className="lc-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-dialog-header">
+              <div className="modal-header-icon-title">
+                <Sparkles size={16} color="#8546ff" />
+                <h3>AI Drafting Settings</h3>
+              </div>
+              <button
+                type="button"
+                className="modal-dialog-close"
+                onClick={() => setIsAIConfigOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="modal-dialog-body">
+              <p className="modal-body-subtext">
+                Choose your AI engine for generating Lean Canvas boxes.
+              </p>
+
+              <div className="ai-provider-list">
+                {AI_PROVIDERS.map((provider) => (
+                  <label
+                    key={provider.id}
+                    className={`ai-provider-card ${aiConfig.provider === provider.id ? "selected" : ""}`}
+                  >
+                    <input
+                      type="radio"
+                      name="ai-provider"
+                      value={provider.id}
+                      checked={aiConfig.provider === provider.id}
+                      onChange={() => setAIConfig({ ...aiConfig, provider: provider.id })}
+                    />
+                    <div className="provider-info">
+                      <div className="provider-title-row">
+                        <span className="provider-name">{provider.name}</span>
+                        {provider.badge && <span className="provider-badge-free">{provider.badge}</span>}
+                      </div>
+                      <span className="provider-desc">{provider.desc}</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              {aiConfig.provider === "gemini" && (
+                <div className="api-key-input-group">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <label>Google Gemini API Key (100% Free)</label>
+                    <a
+                      href="https://aistudio.google.com/app/apikey"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ fontSize: "11px", color: "#579DFF", textDecoration: "none", fontWeight: 600 }}
+                    >
+                      Get Free Key (Google AI Studio) ↗
+                    </a>
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="AIzaSy..."
+                    value={aiConfig.geminiKey || ""}
+                    onChange={(e) => setAIConfig({ ...aiConfig, geminiKey: e.target.value })}
+                  />
+                  <small style={{ color: "var(--lc-text-muted)", fontSize: "11px", lineHeight: "1.4" }}>
+                    {aiConfig.geminiKey?.trim()
+                      ? "✅ Connected! Using your free Google Gemini 1.5 Flash quota (1,500 requests/day)."
+                      : "💡 Free forever with Google AI Studio. If left blank, Link Canvas uses instant AI automatically."}
+                  </small>
+                </div>
+              )}
+
+              {aiConfig.provider === "openai" && (
+                <div className="api-key-input-group">
+                  <label>OpenAI API Key</label>
+                  <input
+                    type="password"
+                    placeholder="sk-proj-..."
+                    value={aiConfig.openaiKey || ""}
+                    onChange={(e) => setAIConfig({ ...aiConfig, openaiKey: e.target.value })}
+                  />
+                </div>
+              )}
+
+              {aiConfig.provider === "groq" && (
+                <div className="api-key-input-group">
+                  <label>Groq API Key</label>
+                  <input
+                    type="password"
+                    placeholder="gsk_..."
+                    value={aiConfig.groqKey || ""}
+                    onChange={(e) => setAIConfig({ ...aiConfig, groqKey: e.target.value })}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="modal-dialog-footer">
+              <button
+                type="button"
+                className="btn-modal-cancel"
+                onClick={() => setIsAIConfigOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-modal-save"
+                onClick={() => handleSaveAIConfig(aiConfig)}
+              >
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
