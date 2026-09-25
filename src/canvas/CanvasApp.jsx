@@ -970,18 +970,19 @@ export default function CanvasApp({ t }) {
             <div className="to-cards-modal-header">
               <div className="to-cards-title-wrap">
                 <div className="to-cards-title-icon-badge">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" strokeWidth="2.5" />
-                    <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2" />
+                    <path d="M8 7h8" />
+                    <path d="M8 12h8" />
+                    <path d="M8 17h5" />
                   </svg>
                 </div>
                 <div>
                   <div className="to-cards-title-row">
-                    <h3>{`Insert ${toCardsSourceBox}s into Trello List`}</h3>
-                    <span className="to-cards-feature-badge">FEATURE #3</span>
+                    <h3>Convert to Trello Cards</h3>
                   </div>
                   <p className="to-cards-subtext">
-                    Select your solutions and choose the destination list to convert them into cards.
+                    Select items from your canvas to create actionable cards on your board.
                   </p>
                 </div>
               </div>
@@ -989,17 +990,18 @@ export default function CanvasApp({ t }) {
                 type="button"
                 className="btn-modal-close"
                 onClick={() => setIsToCardsModalOpen(false)}
+                title="Close"
               >
-                ✕
+                <XIcon size={13} />
               </button>
             </div>
 
             {/* Modal Body */}
             <div className="to-cards-modal-body">
-              {/* Source Box Select Row */}
-              <div className="to-cards-source-bar">
-                <div className="source-label-group">
-                  <label htmlFor="source-box-select">SOURCE BOX:</label>
+              {/* Streamlined Source Toolbar */}
+              <div className="to-cards-toolbar">
+                <div className="source-select-group">
+                  <span className="toolbar-label">Source:</span>
                   <select
                     id="source-box-select"
                     value={toCardsSourceBox}
@@ -1010,27 +1012,17 @@ export default function CanvasApp({ t }) {
                       const count = getSourceItems(boxName).length;
                       return (
                         <option key={boxName} value={boxName}>
-                          {`${i + 1}. ${boxName} (${count} items)`}
+                          {`${boxName} (${count})`}
                         </option>
                       );
                     })}
                   </select>
                 </div>
-                <span className="source-counter-label">
-                  {`${selectedCardIndexes.length} of ${getSourceItems(toCardsSourceBox).length} selected`}
-                </span>
-              </div>
 
-              {/* Select Items Header */}
-              <div className="to-cards-section-header">
-                <div className="section-title-left">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                    <path d="m9 11 3 3L22 4"/>
-                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                  </svg>
-                  <span>{`SELECT ${toCardsSourceBox.toUpperCase()} TO INSERT (${selectedCardIndexes.length}/${getSourceItems(toCardsSourceBox).length}):`}</span>
-                </div>
-                <div className="section-actions-right">
+                <div className="toolbar-actions-group">
+                  <span className="selection-counter-text">
+                    {selectedCardIndexes.length} of {getSourceItems(toCardsSourceBox).length} selected
+                  </span>
                   <button
                     type="button"
                     className="btn-text-action"
@@ -1052,7 +1044,7 @@ export default function CanvasApp({ t }) {
               {/* Items List */}
               <div className="to-cards-items-scroll">
                 {getSourceItems(toCardsSourceBox).length === 0 ? (
-                  <div className="to-cards-empty-box">No items in {toCardsSourceBox}. Click edit or draft with AI first.</div>
+                  <div className="to-cards-empty-box">No items found in {toCardsSourceBox}.</div>
                 ) : (
                   getSourceItems(toCardsSourceBox).map((itemText, idx) => {
                     const isChecked = selectedCardIndexes.includes(idx);
@@ -1062,18 +1054,16 @@ export default function CanvasApp({ t }) {
                         className={`to-cards-item-card ${isChecked ? "is-selected" : ""}`}
                         onClick={() => handleToggleCardIndex(idx)}
                       >
-                        <input
-                          type="checkbox"
-                          className="to-cards-item-checkbox"
-                          checked={isChecked}
-                          onChange={() => {}} // Handled by container click
-                        />
+                        <div className={`custom-checkbox ${isChecked ? "checked" : ""}`}>
+                          {isChecked && (
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          )}
+                        </div>
                         <div className="to-cards-item-content">
-                          <div className="to-cards-item-badges">
-                            <span className="badge-solution-num">{`${toCardsSourceBox.toUpperCase()} #${idx + 1}`}</span>
-                            {idx === 0 && <span className="badge-active-testing">Active Testing</span>}
-                          </div>
-                          <div className="to-cards-item-text">{itemText}</div>
+                          <span className="badge-item-num">{`#${idx + 1}`}</span>
+                          <span className="to-cards-item-text">{itemText}</span>
                         </div>
                       </div>
                     );
@@ -1081,10 +1071,9 @@ export default function CanvasApp({ t }) {
                 )}
               </div>
 
-              {/* Select List to Insert */}
-              <div className="to-cards-section-header" style={{ marginTop: 14 }}>
-                <span className="section-title-clean">SELECT LIST TO INSERT:</span>
-                <span className="section-subtitle-muted">Destination on Trello Board</span>
+              {/* Destination List Selection */}
+              <div className="to-cards-section-header">
+                <span className="section-title-clean">Destination List</span>
               </div>
 
               <div className="to-cards-lists-grid">
@@ -1096,17 +1085,15 @@ export default function CanvasApp({ t }) {
                       className={`to-cards-list-card ${isSelected ? "is-active" : ""}`}
                       onClick={() => setSelectedTargetListId(list.id)}
                     >
-                      <div className="list-radio-indicator">
-                        <div className={`radio-dot ${isSelected ? "checked" : ""}`} />
+                      <div className={`list-radio-indicator ${isSelected ? "is-active" : ""}`}>
+                        {isSelected && <div className="radio-dot" />}
                       </div>
                       <div className="list-info-wrap">
                         <div className="list-name-row">
-                          <span className="list-emoji">{list.icon}</span>
+                          {list.icon && <span className="list-emoji">{list.icon}</span>}
                           <span className="list-name">{list.name}</span>
                         </div>
-                        <span className="list-subtext">{list.subtitle || "Trello List"}</span>
                       </div>
-                      <span className="list-target-pill">Target</span>
                     </div>
                   );
                 })}
@@ -1128,10 +1115,13 @@ export default function CanvasApp({ t }) {
                 onClick={handleInsertCardsSubmit}
                 disabled={selectedCardIndexes.length === 0}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                {`Insert ${selectedCardIndexes.length} ${toCardsSourceBox}s into List`}
+                {selectedCardIndexes.length === 0
+                  ? "Select items to convert"
+                  : `Create ${selectedCardIndexes.length} Card${selectedCardIndexes.length === 1 ? '' : 's'}`}
               </button>
             </div>
           </div>
