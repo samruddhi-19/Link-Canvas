@@ -240,6 +240,13 @@ const LOOK_OPTIONS = [
 
 const INITIAL_BOARD_CARDS = [];
 
+const DEFAULT_TRELLO_LISTS = [
+  { id: "backlog", name: "Backlog / Hypotheses", icon: "📋", subtitle: "Trello List" },
+  { id: "todo", name: "To Do (Next Sprint)", icon: "🎯", subtitle: "Trello List" },
+  { id: "in_progress", name: "In Progress", icon: "⚡", subtitle: "Trello List" },
+  { id: "done", name: "Done / Validated", icon: "✅", subtitle: "Trello List" }
+];
+
 export default function CanvasApp({ t }) {
   const [currentLook, setCurrentLook] = useState("rich");
   const [isLookPickerOpen, setIsLookPickerOpen] = useState(false);
@@ -261,6 +268,13 @@ export default function CanvasApp({ t }) {
   // Box inline edit state
   const [editingBoxKey, setEditingBoxKey] = useState(null);
   const [editingContent, setEditingContent] = useState("");
+
+  // "To Cards" Popup Modal State
+  const [isToCardsModalOpen, setIsToCardsModalOpen] = useState(false);
+  const [toCardsSourceBox, setToCardsSourceBox] = useState("Solution");
+  const [selectedCardIndexes, setSelectedCardIndexes] = useState([]);
+  const [selectedTargetListId, setSelectedTargetListId] = useState("todo");
+  const [trelloLists, setTrelloLists] = useState(DEFAULT_TRELLO_LISTS);
 
   // Re-draft & AI state tracking
   const [draftCount, setDraftCount] = useState(0);
@@ -288,9 +302,10 @@ export default function CanvasApp({ t }) {
       if (e.key === "Escape") {
         setIsLookPickerOpen(false);
         setEditingBoxKey(null);
+        setIsToCardsModalOpen(false);
       }
     }
-    if (isLookPickerOpen) {
+    if (isLookPickerOpen || isToCardsModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -298,7 +313,7 @@ export default function CanvasApp({ t }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLookPickerOpen]);
+  }, [isLookPickerOpen, isToCardsModalOpen]);
 
   function handleSelectLook(lookKey) {
     setCurrentLook(lookKey);
@@ -316,6 +331,66 @@ export default function CanvasApp({ t }) {
     setActiveChipKey(item.key);
     setIdeaPrompt(item.text);
     if (promptError) setPromptError("");
+  }
+
+  function getSourceItems(boxName) {
+    const prop = BOX_KEYS_MAP[boxName]?.prop;
+    const raw = prop ? activeCanvas[prop] : [];
+    if (Array.isArray(raw)) return raw;
+    if (raw && typeof raw === "string" && raw.trim()) return [raw];
+    return [];
+  }
+
+  function handleOpenToCards(e, boxKey = "Solution") {
+    if (e) e.stopPropagation();
+    setToCardsSourceBox(boxKey);
+    const items = getSourceItems(boxKey);
+    setSelectedCardIndexes(items.map((_, i) => i));
+    setIsToCardsModalOpen(true);
+  }
+
+  function handleChangeSourceBox(newBoxKey) {
+    setToCardsSourceBox(newBoxKey);
+    const items = getSourceItems(newBoxKey);
+    setSelectedCardIndexes(items.map((_, i) => i));
+  }
+
+  function handleSelectAllCards(totalCount) {
+    setSelectedCardIndexes(Array.from({ length: totalCount }, (_, i) => i));
+  }
+
+  function handleClearCards() {
+    setSelectedCardIndexes([]);
+  }
+
+  function handleToggleCardIndex(index) {
+    setSelectedCardIndexes(prev =>
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  }
+
+  function handleInsertCardsSubmit() {
+    const items = getSourceItems(toCardsSourceBox);
+    const itemsToInsert = selectedCardIndexes.map(i => items[i]).filter(Boolean);
+
+    if (itemsToInsert.length === 0) {
+      showToast("⚠️ Please select at least one item to insert");
+      return;
+    }
+
+    const selectedList = trelloLists.find(l => l.id === selectedTargetListId) || trelloLists[0];
+
+    const newCards = itemsToInsert.map((title, idx) => ({
+      id: "card_" + Date.now() + "_" + idx,
+      title: title,
+      box: toCardsSourceBox,
+      listId: selectedList.id,
+      listName: selectedList.name
+    }));
+
+    setBoardCards(prev => [...prev, ...newCards]);
+    setIsToCardsModalOpen(false);
+    showToast(`📋 Inserted ${itemsToInsert.length} ${toCardsSourceBox.toLowerCase()} cards into "${selectedList.name}"!`);
   }
 
   function handleStartEdit(e, boxKey, content) {
@@ -493,6 +568,16 @@ export default function CanvasApp({ t }) {
           </div>
 
           <div className="box-header-actions">
+            {boxKey === "Solution" && hasData && !isEditing && (
+              <button
+                type="button"
+                className="btn-box-to-cards-header"
+                title="Convert solutions to Trello cards"
+                onClick={(e) => handleOpenToCards(e, "Solution")}
+              >
+                <span>To Cards →</span>
+              </button>
+            )}
             {!isEditing && (
               <button
                 type="button"
@@ -507,7 +592,7 @@ export default function CanvasApp({ t }) {
               <button
                 type="button"
                 className={`btn-box-action btn-box-ai-regen ${isRegenerating ? "spinning" : ""}`}
-                title={`Regenerate ${title} with Gemini AI`}
+                title={`Regenerate ${title} with AI`}
                 onClick={(e) => handleRegenerateSingleBox(e, title)}
               >
                 <RefreshCw size={11} className={isRegenerating ? "spin-pulse" : ""} />
@@ -567,6 +652,19 @@ export default function CanvasApp({ t }) {
                 <li>{content}</li>
               )}
             </ul>
+            {boxKey === "Solution" && (
+              <button
+                type="button"
+                className="btn-solution-to-cards-bottom"
+                onClick={(e) => handleOpenToCards(e, "Solution")}
+                title="Insert Solutions into Trello List"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                </svg>
+                <span>To Cards: Select & Insert into List</span>
+              </button>
+            )}
           </div>
         ) : (
           <p className="box-item-subtext">{subtextHint}</p>
@@ -770,6 +868,182 @@ export default function CanvasApp({ t }) {
           {renderBox("Revenue streams", 6, 6, "span-revenue", "icon-badge-revenue", Banknote, "Revenue streams", activeCanvas.revenueStreams, "Pricing and monetization")}
         </div>
       </div>
+
+      {/* "To Cards" Modal Popup */}
+      {isToCardsModalOpen && (
+        <div className="lc-modal-overlay" onClick={() => setIsToCardsModalOpen(false)}>
+          <div className="lc-to-cards-modal-card" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="to-cards-modal-header">
+              <div className="to-cards-title-wrap">
+                <div className="to-cards-title-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                    <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="to-cards-title-row">
+                    <h3>{`Insert ${toCardsSourceBox}s into Trello List`}</h3>
+                    <span className="to-cards-feature-badge">FEATURE #3</span>
+                  </div>
+                  <p className="to-cards-subtext">
+                    Select your solutions and choose the destination list to convert them into cards.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-modal-close"
+                onClick={() => setIsToCardsModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="to-cards-modal-body">
+              {/* Source Box Select Row */}
+              <div className="to-cards-source-bar">
+                <div className="source-label-group">
+                  <label htmlFor="source-box-select">SOURCE BOX:</label>
+                  <select
+                    id="source-box-select"
+                    value={toCardsSourceBox}
+                    onChange={(e) => handleChangeSourceBox(e.target.value)}
+                    className="to-cards-select-dropdown"
+                  >
+                    {Object.keys(BOX_KEYS_MAP).map((boxName, i) => {
+                      const count = getSourceItems(boxName).length;
+                      return (
+                        <option key={boxName} value={boxName}>
+                          {`${i + 1}. ${boxName} (${count} items)`}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <span className="source-counter-label">
+                  {`${selectedCardIndexes.length} of ${getSourceItems(toCardsSourceBox).length} selected`}
+                </span>
+              </div>
+
+              {/* Select Items Header */}
+              <div className="to-cards-section-header">
+                <div className="section-title-left">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="m9 11 3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                  <span>{`SELECT ${toCardsSourceBox.toUpperCase()} TO INSERT (${selectedCardIndexes.length}/${getSourceItems(toCardsSourceBox).length}):`}</span>
+                </div>
+                <div className="section-actions-right">
+                  <button
+                    type="button"
+                    className="btn-text-action"
+                    onClick={() => handleSelectAllCards(getSourceItems(toCardsSourceBox).length)}
+                  >
+                    Select All
+                  </button>
+                  <span className="action-sep">•</span>
+                  <button
+                    type="button"
+                    className="btn-text-action"
+                    onClick={handleClearCards}
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              {/* Items List */}
+              <div className="to-cards-items-scroll">
+                {getSourceItems(toCardsSourceBox).length === 0 ? (
+                  <div className="to-cards-empty-box">No items in {toCardsSourceBox}. Click edit or draft with AI first.</div>
+                ) : (
+                  getSourceItems(toCardsSourceBox).map((itemText, idx) => {
+                    const isChecked = selectedCardIndexes.includes(idx);
+                    return (
+                      <div
+                        key={idx}
+                        className={`to-cards-item-card ${isChecked ? "is-selected" : ""}`}
+                        onClick={() => handleToggleCardIndex(idx)}
+                      >
+                        <input
+                          type="checkbox"
+                          className="to-cards-item-checkbox"
+                          checked={isChecked}
+                          onChange={() => {}} // Handled by container click
+                        />
+                        <div className="to-cards-item-content">
+                          <div className="to-cards-item-badges">
+                            <span className="badge-solution-num">{`${toCardsSourceBox.toUpperCase()} #${idx + 1}`}</span>
+                            {idx === 0 && <span className="badge-active-testing">Active Testing</span>}
+                          </div>
+                          <div className="to-cards-item-text">{itemText}</div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Select List to Insert */}
+              <div className="to-cards-section-header" style={{ marginTop: 14 }}>
+                <span className="section-title-clean">SELECT LIST TO INSERT:</span>
+                <span className="section-subtitle-muted">Destination on Trello Board</span>
+              </div>
+
+              <div className="to-cards-lists-grid">
+                {trelloLists.map((list) => {
+                  const isSelected = selectedTargetListId === list.id;
+                  return (
+                    <div
+                      key={list.id}
+                      className={`to-cards-list-card ${isSelected ? "is-active" : ""}`}
+                      onClick={() => setSelectedTargetListId(list.id)}
+                    >
+                      <div className="list-radio-indicator">
+                        <div className={`radio-dot ${isSelected ? "checked" : ""}`} />
+                      </div>
+                      <div className="list-info-wrap">
+                        <div className="list-name-row">
+                          <span className="list-emoji">{list.icon}</span>
+                          <span className="list-name">{list.name}</span>
+                        </div>
+                        <span className="list-subtext">{list.subtitle || "Trello List"}</span>
+                      </div>
+                      <span className="list-target-pill">Target</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="to-cards-modal-footer">
+              <button
+                type="button"
+                className="btn-to-cards-cancel"
+                onClick={() => setIsToCardsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-to-cards-submit"
+                onClick={handleInsertCardsSubmit}
+                disabled={selectedCardIndexes.length === 0}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                </svg>
+                {`Insert ${selectedCardIndexes.length} ${toCardsSourceBox}s into List`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

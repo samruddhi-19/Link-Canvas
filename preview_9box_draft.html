@@ -401,7 +401,7 @@
               <li class="bullet-item">Single-serve pocket sachets with shaker ball included in starter kit.</li>
             </ul>
           </div>
-          <button class="btn-to-cards" onclick="alert('Solution cards inserted into board list!')">
+          <button class="btn-to-cards" onclick="openToCardsModal()">
             <span>📋</span>
             <span>To Cards: Select & Insert into List</span>
           </button>
@@ -486,12 +486,139 @@
       <div class="canvas-footer">
         <div class="footer-pill">
           <span class="dot"></span>
-          <span>Link Canvas 2.0 • Ash Maurya Framework</span>
+          <span>Lean Canvas • Ash Maurya Framework</span>
         </div>
         <div>
           <span>AI-Generated First Draft • Ready to Sync to Trello</span>
         </div>
       </div>
     </div>
+
+    <!-- To Cards Modal Popup -->
+    <div id="toCardsModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; padding: 20px;">
+      <div style="width: 100%; max-width: 580px; background: #181d22; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); overflow: hidden; display: flex; flex-direction: column;">
+        <!-- Header -->
+        <div style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); background: #161b20; display: flex; align-items: flex-start; justify-content: space-between;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(2,132,199,0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 16px;">📋</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+                <h3 style="margin: 0; font-size: 14.5px; font-weight: 700; color: #f7f8f9;">Insert Solutions into Trello List</h3>
+                <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(56,189,248,0.15); color: #38bdf8; border: 0.5px solid rgba(56,189,248,0.3);">FEATURE #3</span>
+              </div>
+              <p style="margin: 0; font-size: 11.5px; color: #94a3b8;">Select your solutions and choose the destination list to convert them into cards.</p>
+            </div>
+          </div>
+          <button onclick="closeToCardsModal()" style="background: transparent; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; padding: 4px;">✕</button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;">
+          <!-- Source Box Row -->
+          <div style="background: #1d2125; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #94a3b8;">SOURCE BOX:</span>
+              <select style="background: #161a1d; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 4px 8px; color: #f7f8f9; font-size: 12px; font-weight: 600;">
+                <option selected>4. Solution (3 items)</option>
+                <option>1. Problem (3 items)</option>
+                <option>3. Value proposition (2 items)</option>
+              </select>
+            </div>
+            <span style="font-size: 11.5px; color: #94a3b8;">3 of 3 selected</span>
+          </div>
+
+          <!-- Solutions to Insert -->
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 700; color: #cbd5e1;">
+            <span>SELECT SOLUTIONS TO INSERT (3/3):</span>
+            <div style="display: flex; gap: 6px;">
+              <span style="color: #38bdf8; cursor: pointer;">Select All</span>
+              <span style="color: #64748b;">•</span>
+              <span style="color: #38bdf8; cursor: pointer;">Clear</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.4); border-radius: 8px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px;">
+              <input type="checkbox" checked style="margin-top: 3px; accent-color: #0284c7;" />
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                  <span style="font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(56,189,248,0.16); color: #38bdf8;">SOLUTION #1</span>
+                  <span style="font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: rgba(245,158,11,0.16); color: #fbbf24;">Active Testing</span>
+                </div>
+                <div style="font-size: 12px; color: #f7f8f9;">Micro-milled instant dissolving formulation (no clumps, shakes in cold water)</div>
+              </div>
+            </div>
+
+            <div style="background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.4); border-radius: 8px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px;">
+              <input type="checkbox" checked style="margin-top: 3px; accent-color: #0284c7;" />
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                  <span style="font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(56,189,248,0.16); color: #38bdf8;">SOLUTION #2</span>
+                </div>
+                <div style="font-size: 12px; color: #f7f8f9;">Exciting natural flavor variants (Jeera Masala, Sweet Cardamom, Mango Jaggery)</div>
+              </div>
+            </div>
+
+            <div style="background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.4); border-radius: 8px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px;">
+              <input type="checkbox" checked style="margin-top: 3px; accent-color: #0284c7;" />
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 3px;">
+                  <span style="font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: rgba(56,189,248,0.16); color: #38bdf8;">SOLUTION #3</span>
+                </div>
+                <div style="font-size: 12px; color: #f7f8f9;">Single-serve pocket sachets with shaker ball included in starter kit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Select List Row -->
+          <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 700; color: #cbd5e1; margin-top: 4px;">
+            <span>SELECT LIST TO INSERT:</span>
+            <span style="font-size: 10.5px; font-weight: normal; color: #94a3b8;">Destination on Trello Board</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="background: #1d2125; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <div style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #64748b;"></div>
+              <div style="flex: 1;">
+                <div style="font-size: 11.5px; font-weight: 600; color: #f7f8f9;">📋 Backlog / Hypotheses</div>
+                <div style="font-size: 10px; color: #94a3b8;">Trello List</div>
+              </div>
+              <span style="font-size: 10px; color: #64748b; background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 4px;">Target</span>
+            </div>
+
+            <div style="background: rgba(2,132,199,0.15); border: 1px solid #0284c7; border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <div style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #0284c7; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 6px; height: 6px; border-radius: 50%; background: #0284c7;"></div>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-size: 11.5px; font-weight: 600; color: #f7f8f9;">🎯 To Do (Next Sprint)</div>
+                <div style="font-size: 10px; color: #94a3b8;">Trello List</div>
+              </div>
+              <span style="font-size: 10px; color: #38bdf8; background: rgba(56,189,248,0.1); padding: 1px 5px; border-radius: 4px;">Target</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); background: #161b20; display: flex; align-items: center; justify-content: space-between;">
+          <button onclick="closeToCardsModal()" style="padding: 7px 14px; border-radius: 6px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 12px; cursor: pointer;">Cancel</button>
+          <button onclick="alert('Inserted 3 Solutions into Trello List: To Do (Next Sprint)'); closeToCardsModal();" style="padding: 7px 16px; border-radius: 6px; background: #0284c7; border: none; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 10px rgba(2,132,199,0.4);">
+            <span>■</span>
+            <span>Insert 3 Solutions into List</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function openToCardsModal() {
+        const modal = document.getElementById('toCardsModal');
+        if (modal) modal.style.display = 'flex';
+      }
+      function closeToCardsModal() {
+        const modal = document.getElementById('toCardsModal');
+        if (modal) modal.style.display = 'none';
+      }
+    </script>
   </body>
 </html>
