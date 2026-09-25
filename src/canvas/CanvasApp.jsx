@@ -4,6 +4,7 @@ import {
   generateLeanCanvasAI,
   regenerateSingleBoxAI
 } from "../lib/aiDraftService.js";
+import { createCardOnList } from "../lib/trelloApi.js";
 
 // =========================================================================
 // ICONS (14px Lucide-style)
@@ -290,6 +291,27 @@ export default function CanvasApp({ t }) {
         })
         .catch(() => {});
     }
+
+    // Dynamically fetch actual Trello lists from current board
+    if (t && typeof t.lists === "function") {
+      t.lists("all")
+        .then((realLists) => {
+          if (Array.isArray(realLists) && realLists.length > 0) {
+            const listIcons = ["📋", "🎯", "⚡", "✅", "📌", "🚀", "💡"];
+            const formatted = realLists.map((l, index) => ({
+              id: l.id,
+              name: l.name,
+              icon: listIcons[index % listIcons.length] || "📋",
+              subtitle: "Trello Board List"
+            }));
+            setTrelloLists(formatted);
+            setSelectedTargetListId(formatted[0].id);
+          }
+        })
+        .catch(() => {
+          // Keep default fallback lists if offline or standalone preview
+        });
+    }
   }, [t]);
 
   useEffect(() => {
@@ -369,7 +391,7 @@ export default function CanvasApp({ t }) {
     );
   }
 
-  function handleInsertCardsSubmit() {
+  async function handleInsertCardsSubmit() {
     const items = getSourceItems(toCardsSourceBox);
     const itemsToInsert = selectedCardIndexes.map(i => items[i]).filter(Boolean);
 
@@ -379,6 +401,17 @@ export default function CanvasApp({ t }) {
     }
 
     const selectedList = trelloLists.find(l => l.id === selectedTargetListId) || trelloLists[0];
+
+    // Attempt real card creation via Trello REST API if authenticated
+    if (t) {
+      for (const title of itemsToInsert) {
+        try {
+          await createCardOnList(t, selectedList.id, title, `Generated from Lean Canvas (${toCardsSourceBox})`);
+        } catch (apiErr) {
+          // Handled gracefully (e.g. if user is browsing without write authorization)
+        }
+      }
+    }
 
     const newCards = itemsToInsert.map((title, idx) => ({
       id: "card_" + Date.now() + "_" + idx,

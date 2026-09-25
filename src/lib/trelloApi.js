@@ -76,3 +76,22 @@ export function getCurrentMember(t) {
 export async function disconnectMember(t) {
   await clearToken(t);
 }
+
+/**
+ * Creates a new card in a specified Trello list.
+ * @param {object} t - Trello Power-Up client
+ * @param {string} idList - Target Trello list ID
+ * @param {string} name - Card title
+ * @param {string} desc - Card description
+ */
+export async function createCardOnList(t, idList, name, desc = "") {
+  return apiFetch(t, "/cards", {
+    method: "POST",
+    params: {
+      idList,
+      name,
+      desc,
+      pos: "bottom"
+    }
+  });
+}
