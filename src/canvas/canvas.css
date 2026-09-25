@@ -1544,17 +1544,17 @@ button:active {
 }
 
 /* =========================================================================
-   "TO CARDS" BUTTONS & MODAL POPUP
+   "TO CARDS" BUTTONS & MODAL POPUP (THEME HARMONIZED)
    ========================================================================= */
 
 .btn-box-to-cards-header {
   height: 20px;
-  padding: 0 7px;
+  padding: 0 8px;
   font-size: 10.5px;
   font-weight: 600;
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  border: 0.5px solid rgba(56, 189, 248, 0.35);
+  background: rgba(87, 229, 168, 0.12);
+  color: #57E5A8;
+  border: 0.5px solid rgba(87, 229, 168, 0.3);
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
@@ -1564,19 +1564,20 @@ button:active {
 }
 
 .btn-box-to-cards-header:hover {
-  background: rgba(56, 189, 248, 0.25);
-  border-color: rgba(56, 189, 248, 0.5);
-  filter: brightness(1.1);
+  background: rgba(87, 229, 168, 0.22);
+  border-color: #57E5A8;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(87, 229, 168, 0.25);
 }
 
 .btn-solution-to-cards-bottom {
-  margin-top: 8px;
+  margin-top: 10px;
   width: 100%;
   padding: 6px 10px;
   border-radius: 6px;
-  background: #0284c7;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: rgba(87, 229, 168, 0.1);
+  border: 1px solid rgba(87, 229, 168, 0.25);
+  color: #57E5A8;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -1584,18 +1585,25 @@ button:active {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
 
 .btn-solution-to-cards-bottom:hover {
-  background: #0369a1;
-  filter: brightness(1.1);
+  background: rgba(87, 229, 168, 0.2);
+  border-color: #57E5A8;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(87, 229, 168, 0.25);
   transform: translateY(-1px);
 }
 
 .btn-solution-to-cards-bottom svg {
+  color: #57E5A8;
+  transition: color 0.15s ease;
+}
+
+.btn-solution-to-cards-bottom:hover svg {
   color: #ffffff;
 }
 
@@ -1606,7 +1614,7 @@ button:active {
   background: #181d22;
   border: 1px solid var(--lc-border-strong);
   border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1634,9 +1642,9 @@ button:active {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(2, 132, 199, 0.18);
-  color: #38bdf8;
-  border: 0.5px solid rgba(56, 189, 248, 0.3);
+  background: rgba(87, 229, 168, 0.15);
+  color: #57E5A8;
+  border: 0.5px solid rgba(87, 229, 168, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1663,9 +1671,9 @@ button:active {
   font-weight: 700;
   padding: 1.5px 6px;
   border-radius: 4px;
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  border: 0.5px solid rgba(56, 189, 248, 0.3);
+  background: rgba(87, 229, 168, 0.15);
+  color: #57E5A8;
+  border: 0.5px solid rgba(87, 229, 168, 0.3);
   text-transform: uppercase;
 }
 
@@ -1723,7 +1731,7 @@ button:active {
 }
 
 .to-cards-select-dropdown:focus {
-  border-color: #579DFF;
+  border-color: #57E5A8;
 }
 
 .source-counter-label {
@@ -1770,7 +1778,7 @@ button:active {
 .btn-text-action {
   background: transparent;
   border: none;
-  color: #579DFF;
+  color: #57E5A8;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -1779,6 +1787,7 @@ button:active {
 
 .btn-text-action:hover {
   text-decoration: underline;
+  color: #7AECBC;
 }
 
 .action-sep {
@@ -1825,14 +1834,14 @@ button:active {
 }
 
 .to-cards-item-card.is-selected {
-  background: rgba(56, 189, 248, 0.07);
-  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(87, 229, 168, 0.08);
+  border-color: rgba(87, 229, 168, 0.45);
 }
 
 .to-cards-item-checkbox {
   margin-top: 3px;
   cursor: pointer;
-  accent-color: #0284c7;
+  accent-color: #57E5A8;
   width: 15px;
   height: 15px;
 }
@@ -1855,9 +1864,9 @@ button:active {
   font-weight: 700;
   padding: 1px 6px;
   border-radius: 4px;
-  background: rgba(56, 189, 248, 0.16);
-  color: #38bdf8;
-  border: 0.5px solid rgba(56, 189, 248, 0.3);
+  background: rgba(87, 229, 168, 0.15);
+  color: #57E5A8;
+  border: 0.5px solid rgba(87, 229, 168, 0.3);
 }
 
 .badge-active-testing {
@@ -1901,8 +1910,8 @@ button:active {
 }
 
 .to-cards-list-card.is-active {
-  background: rgba(2, 132, 199, 0.12);
-  border-color: #0284c7;
+  background: rgba(87, 229, 168, 0.12);
+  border-color: #57E5A8;
 }
 
 .list-radio-indicator {
@@ -1917,14 +1926,14 @@ button:active {
 }
 
 .to-cards-list-card.is-active .list-radio-indicator {
-  border-color: #0284c7;
+  border-color: #57E5A8;
 }
 
 .radio-dot.checked {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0284c7;
+  background: #57E5A8;
 }
 
 .list-info-wrap {
@@ -1987,21 +1996,21 @@ button:active {
   padding: 7px 16px;
   font-size: 12px;
   font-weight: 600;
-  background: #0284c7;
-  color: #ffffff;
+  background: #57E5A8;
+  color: #121E18;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.4);
+  box-shadow: 0 2px 10px rgba(87, 229, 168, 0.35);
   transition: all 0.15s ease;
 }
 
 .btn-to-cards-submit:hover:not(:disabled) {
-  background: #0369a1;
-  filter: brightness(1.1);
+  background: #7AECBC;
+  filter: brightness(1.05);
   transform: translateY(-1px);
 }
 
