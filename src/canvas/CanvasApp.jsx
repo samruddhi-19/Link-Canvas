@@ -281,7 +281,26 @@ export default function CanvasApp({ t }) {
   const [draftCount, setDraftCount] = useState(0);
   const [boxRegenCounts, setBoxRegenCounts] = useState({});
 
+  // Helper to persist canvas state across close/re-open
+  function persistCanvasData(canvasData, isGen, prompt, dCount, bCards) {
+    const payload = {
+      activeCanvas: canvasData,
+      isGenerated: isGen,
+      ideaPrompt: prompt,
+      draftCount: dCount,
+      boardCards: bCards || []
+    };
+    try {
+      localStorage.setItem("lean_canvas_saved_state", JSON.stringify(payload));
+    } catch (e) {}
+
+    if (t && typeof t.set === "function") {
+      t.set("board", "shared", "leanCanvasData", payload).catch(() => {});
+    }
+  }
+
   useEffect(() => {
+    // 1. Restore saved look preference
     if (t && typeof t.get === "function") {
       t.get("member", "private", "lcLook")
         .then((savedLook) => {
@@ -292,7 +311,40 @@ export default function CanvasApp({ t }) {
         .catch(() => {});
     }
 
-    // Dynamically fetch actual Trello lists from current board
+    // 2. Restore saved Lean Canvas draft state (Trello storage first, localStorage fallback)
+    let loadedFromTrello = false;
+    if (t && typeof t.get === "function") {
+      t.get("board", "shared", "leanCanvasData")
+        .then((savedData) => {
+          if (savedData && savedData.activeCanvas) {
+            loadedFromTrello = true;
+            setActiveCanvas(savedData.activeCanvas);
+            setIsGenerated(!!savedData.isGenerated);
+            if (savedData.ideaPrompt) setIdeaPrompt(savedData.ideaPrompt);
+            if (typeof savedData.draftCount === "number") setDraftCount(savedData.draftCount);
+            if (Array.isArray(savedData.boardCards)) setBoardCards(savedData.boardCards);
+          }
+        })
+        .catch(() => {});
+    }
+
+    if (!loadedFromTrello) {
+      try {
+        const raw = localStorage.getItem("lean_canvas_saved_state");
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved && saved.activeCanvas) {
+            setActiveCanvas(saved.activeCanvas);
+            setIsGenerated(!!saved.isGenerated);
+            if (saved.ideaPrompt) setIdeaPrompt(saved.ideaPrompt);
+            if (typeof saved.draftCount === "number") setDraftCount(saved.draftCount);
+            if (Array.isArray(saved.boardCards)) setBoardCards(saved.boardCards);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. Dynamically fetch actual Trello lists from current board
     if (t && typeof t.lists === "function") {
       t.lists("all")
         .then((realLists) => {
@@ -421,7 +473,9 @@ export default function CanvasApp({ t }) {
       listName: selectedList.name
     }));
 
-    setBoardCards(prev => [...prev, ...newCards]);
+    const updatedBoardCards = [...boardCards, ...newCards];
+    setBoardCards(updatedBoardCards);
+    persistCanvasData(activeCanvas, isGenerated, ideaPrompt, draftCount, updatedBoardCards);
     setIsToCardsModalOpen(false);
     showToast(`📋 Inserted ${itemsToInsert.length} ${toCardsSourceBox.toLowerCase()} cards into "${selectedList.name}"!`);
   }
@@ -451,11 +505,13 @@ export default function CanvasApp({ t }) {
       } else {
         newVal = editingContent.trim();
       }
-      setActiveCanvas(prev => ({
-        ...prev,
+      const updatedCanvas = {
+        ...activeCanvas,
         [mapping.prop]: newVal
-      }));
+      };
+      setActiveCanvas(updatedCanvas);
       setIsGenerated(true);
+      persistCanvasData(updatedCanvas, true, ideaPrompt, draftCount, boardCards);
       showToast(`✓ Updated ${boxKey}`);
     }
     setEditingBoxKey(null);
@@ -512,6 +568,7 @@ export default function CanvasApp({ t }) {
           setIsLoading(false);
           setIsGenerated(true);
           setLoadingStageText("");
+          persistCanvasData(aiResult, true, trimmedPrompt, nextIteration, boardCards);
           showToast(nextIteration > 0 ? `✨ Generated Draft #${nextIteration + 1}!` : "✨ Generated 9-box Lean Canvas!");
         }
       }, 100);
@@ -538,10 +595,12 @@ export default function CanvasApp({ t }) {
       if (newItems) {
         const mapping = BOX_KEYS_MAP[boxKey];
         if (mapping && mapping.prop) {
-          setActiveCanvas(prev => ({
-            ...prev,
+          const updatedCanvas = {
+            ...activeCanvas,
             [mapping.prop]: newItems
-          }));
+          };
+          setActiveCanvas(updatedCanvas);
+          persistCanvasData(updatedCanvas, true, ideaPrompt, draftCount, boardCards);
           showToast(`✨ Refreshed ${boxKey}!`);
         }
       }
@@ -562,6 +621,7 @@ export default function CanvasApp({ t }) {
     setActiveCanvas(EMPTY_CANVAS);
     setBoardCards([]);
     setEditingBoxKey(null);
+    persistCanvasData(EMPTY_CANVAS, false, ideaPrompt, 0, []);
     showToast("Canvas reset to empty state");
   }
 
