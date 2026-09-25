@@ -115,6 +115,26 @@ const RefreshCw = ({ size = 12, className = "" }) => (
   </svg>
 );
 
+const Pencil = ({ size = 11, className = "" }) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+    <path d="m15 5 4 4"/>
+  </svg>
+);
+
+const Check = ({ size = 11, className = "" }) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
+const XIcon = ({ size = 11, className = "" }) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
 const Scale = ({ size = 14 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
@@ -188,6 +208,18 @@ const EMPTY_CANVAS = {
   revenueStreams: []
 };
 
+const BOX_KEYS_MAP = {
+  "Problem": { prop: "problem", isArray: true },
+  "Solution": { prop: "solution", isArray: true },
+  "Key metrics": { prop: "keyMetrics", isArray: true },
+  "Value proposition": { prop: "uvp", isArray: false },
+  "Unfair advantage": { prop: "unfairAdvantage", isArray: false },
+  "Channels": { prop: "channels", isArray: true },
+  "Customers": { prop: "customerSegments", isArray: true },
+  "Cost structure": { prop: "costStructure", isArray: true },
+  "Revenue streams": { prop: "revenueStreams", isArray: true }
+};
+
 const HUES = [
   { c: "#FF7D75", bg: "color-mix(in srgb, #FF7D75 13%, #1D2125)", bd: "color-mix(in srgb, #FF7D75 30%, #2C333A)", ti: "color-mix(in srgb, #FF7D75 55%, #fff)" },
   { c: "#57E5A8", bg: "color-mix(in srgb, #57E5A8 13%, #1D2125)", bd: "color-mix(in srgb, #57E5A8 30%, #2C333A)", ti: "color-mix(in srgb, #57E5A8 55%, #fff)" },
@@ -206,12 +238,7 @@ const LOOK_OPTIONS = [
   { key: "gradient", title: "Soft gradient", desc: "Rich tones with a fade" }
 ];
 
-const INITIAL_BOARD_CARDS = [
-  { id: "c1", title: "Database schema update", box: "Problem" },
-  { id: "c2", title: "Fix login bug", box: null },
-  { id: "c3", title: "Implement export feature", box: null },
-  { id: "c4", title: "Design dashboard UI", box: null },
-];
+const INITIAL_BOARD_CARDS = [];
 
 export default function CanvasApp({ t }) {
   const [currentLook, setCurrentLook] = useState("rich");
@@ -230,6 +257,10 @@ export default function CanvasApp({ t }) {
   const [selectedBoxKey, setSelectedBoxKey] = useState("Problem");
   const [toastMessage, setToastMessage] = useState(null);
   const [regeneratingBox, setRegeneratingBox] = useState(null);
+
+  // Box inline edit state
+  const [editingBoxKey, setEditingBoxKey] = useState(null);
+  const [editingContent, setEditingContent] = useState("");
 
   // Re-draft & AI state tracking
   const [draftCount, setDraftCount] = useState(0);
@@ -256,6 +287,7 @@ export default function CanvasApp({ t }) {
     function handleKeyDown(e) {
       if (e.key === "Escape") {
         setIsLookPickerOpen(false);
+        setEditingBoxKey(null);
       }
     }
     if (isLookPickerOpen) {
@@ -286,6 +318,48 @@ export default function CanvasApp({ t }) {
     if (promptError) setPromptError("");
   }
 
+  function handleStartEdit(e, boxKey, content) {
+    e.stopPropagation();
+    setEditingBoxKey(boxKey);
+    if (Array.isArray(content)) {
+      setEditingContent(content.join("\n"));
+    } else if (typeof content === "string") {
+      setEditingContent(content);
+    } else {
+      setEditingContent("");
+    }
+  }
+
+  function handleSaveEdit(e, boxKey) {
+    if (e) e.stopPropagation();
+    const mapping = BOX_KEYS_MAP[boxKey];
+    if (mapping) {
+      let newVal;
+      if (mapping.isArray) {
+        newVal = editingContent
+          .split("\n")
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+      } else {
+        newVal = editingContent.trim();
+      }
+      setActiveCanvas(prev => ({
+        ...prev,
+        [mapping.prop]: newVal
+      }));
+      setIsGenerated(true);
+      showToast(`✓ Updated ${boxKey}`);
+    }
+    setEditingBoxKey(null);
+    setEditingContent("");
+  }
+
+  function handleCancelEdit(e) {
+    if (e) e.stopPropagation();
+    setEditingBoxKey(null);
+    setEditingContent("");
+  }
+
   async function handleGenerateCanvas() {
     const trimmedPrompt = ideaPrompt.trim();
     if (!trimmedPrompt) {
@@ -301,19 +375,18 @@ export default function CanvasApp({ t }) {
     setDraftCount(nextIteration);
 
     setLoadingStageText(nextIteration > 0
-      ? `🔄 Gemini synthesizing Draft #${nextIteration + 1} with alternative strategic angle...`
-      : "🧠 Gemini is analyzing startup idea & market context..."
+      ? `🔄 Synthesizing Draft #${nextIteration + 1} with alternative strategic angle...`
+      : "🧠 Analyzing startup idea & market context..."
     );
 
     const stageTimer1 = setTimeout(() => {
-      setLoadingStageText("⚡ Gemini is synthesizing problems, UVP & solutions...");
+      setLoadingStageText("⚡ Synthesizing problems, UVP & solutions...");
     }, 900);
     const stageTimer2 = setTimeout(() => {
-      setLoadingStageText("📊 Gemini is structuring metrics, channels & financials...");
+      setLoadingStageText("📊 Structuring metrics, channels & financials...");
     }, 2000);
 
     try {
-      // Call Google Gemini AI with iteration count
       const aiResult = await generateLeanCanvasAI(trimmedPrompt, nextIteration);
 
       clearTimeout(stageTimer1);
@@ -331,14 +404,14 @@ export default function CanvasApp({ t }) {
           setIsLoading(false);
           setIsGenerated(true);
           setLoadingStageText("");
-          showToast(nextIteration > 0 ? `✨ Generated Draft #${nextIteration + 1} with Gemini AI!` : "✨ Generated 9-box Lean Canvas with Gemini AI!");
+          showToast(nextIteration > 0 ? `✨ Generated Draft #${nextIteration + 1}!` : "✨ Generated 9-box Lean Canvas!");
         }
       }, 100);
     } catch (err) {
       clearTimeout(stageTimer1);
       clearTimeout(stageTimer2);
       setIsLoading(false);
-      setPromptError(err.message || "Failed to generate canvas with Gemini AI");
+      setPromptError(err.message || "Failed to generate canvas");
       showToast("⚠️ Generation error. Please try again.");
     }
   }
@@ -347,7 +420,7 @@ export default function CanvasApp({ t }) {
     e.stopPropagation();
     if (!isGenerated || isLoading) return;
     setRegeneratingBox(boxKey);
-    showToast(`✨ Regenerating ${boxKey} with Gemini AI...`);
+    showToast(`✨ Regenerating ${boxKey}...`);
 
     try {
       const nextBoxIter = (boxRegenCounts[boxKey] || 0) + 1;
@@ -355,22 +428,11 @@ export default function CanvasApp({ t }) {
 
       const newItems = await regenerateSingleBoxAI(boxKey, activeCanvas, ideaPrompt, nextBoxIter);
       if (newItems) {
-        const keyMap = {
-          "Problem": "problem",
-          "Solution": "solution",
-          "Key metrics": "keyMetrics",
-          "Value proposition": "uvp",
-          "Unfair advantage": "unfairAdvantage",
-          "Channels": "channels",
-          "Customers": "customerSegments",
-          "Cost structure": "costStructure",
-          "Revenue streams": "revenueStreams"
-        };
-        const propName = keyMap[boxKey];
-        if (propName) {
+        const mapping = BOX_KEYS_MAP[boxKey];
+        if (mapping && mapping.prop) {
           setActiveCanvas(prev => ({
             ...prev,
-            [propName]: newItems
+            [mapping.prop]: newItems
           }));
           showToast(`✨ Refreshed ${boxKey}!`);
         }
@@ -390,7 +452,8 @@ export default function CanvasApp({ t }) {
     setBoxRegenCounts({});
     setPromptError("");
     setActiveCanvas(EMPTY_CANVAS);
-    setBoardCards(INITIAL_BOARD_CARDS);
+    setBoardCards([]);
+    setEditingBoxKey(null);
     showToast("Canvas reset to empty state");
   }
 
@@ -413,11 +476,12 @@ export default function CanvasApp({ t }) {
     const isBoxLoading = isLoading && revealedCount < orderIndex;
     const isJustRevealed = isLoading && revealedCount === orderIndex;
     const isRegenerating = regeneratingBox === boxKey;
+    const isEditing = editingBoxKey === boxKey;
     const hasData = isFilled && ((Array.isArray(content) && content.length > 0) || (typeof content === "string" && content.trim().length > 0));
 
     return (
       <div
-        className={`lc-box-item ${colClass} ${hasData ? "is-filled" : ""} ${selectedBoxKey === boxKey ? "active-target" : ""}`}
+        className={`lc-box-item ${colClass} ${hasData ? "is-filled" : ""} ${selectedBoxKey === boxKey ? "active-target" : ""} ${isEditing ? "is-editing" : ""}`}
         onClick={() => handleBoxClick(boxKey)}
       >
         <div className="box-item-header">
@@ -429,10 +493,20 @@ export default function CanvasApp({ t }) {
           </div>
 
           <div className="box-header-actions">
-            {isGenerated && (
+            {!isEditing && (
               <button
                 type="button"
-                className={`btn-box-ai-regen ${isRegenerating ? "spinning" : ""}`}
+                className="btn-box-action btn-box-edit"
+                title={`Edit ${title}`}
+                onClick={(e) => handleStartEdit(e, title, content)}
+              >
+                <Pencil size={11} />
+              </button>
+            )}
+            {isGenerated && !isEditing && (
+              <button
+                type="button"
+                className={`btn-box-action btn-box-ai-regen ${isRegenerating ? "spinning" : ""}`}
                 title={`Regenerate ${title} with Gemini AI`}
                 onClick={(e) => handleRegenerateSingleBox(e, title)}
               >
@@ -443,7 +517,42 @@ export default function CanvasApp({ t }) {
           </div>
         </div>
 
-        {isBoxLoading || isRegenerating ? (
+        {isEditing ? (
+          <div className="box-inline-editor" onClick={(e) => e.stopPropagation()}>
+            <textarea
+              className="box-edit-textarea"
+              value={editingContent}
+              onChange={(e) => setEditingContent(e.target.value)}
+              placeholder={`Enter ${title} (one item per line)...`}
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                  handleSaveEdit(e, title);
+                } else if (e.key === "Escape") {
+                  handleCancelEdit(e);
+                }
+              }}
+            />
+            <div className="box-edit-actions">
+              <button
+                type="button"
+                className="btn-box-save"
+                onClick={(e) => handleSaveEdit(e, title)}
+                title="Save changes (Ctrl+Enter)"
+              >
+                <Check size={11} /> Save
+              </button>
+              <button
+                type="button"
+                className="btn-box-cancel"
+                onClick={handleCancelEdit}
+                title="Cancel (Esc)"
+              >
+                <XIcon size={11} /> Cancel
+              </button>
+            </div>
+          </div>
+        ) : isBoxLoading || isRegenerating ? (
           <div className="box-skeleton-bars">
             <div className="skeleton-bar" style={{ width: "85%" }}></div>
             <div className="skeleton-bar" style={{ width: "65%" }}></div>
@@ -463,14 +572,16 @@ export default function CanvasApp({ t }) {
           <p className="box-item-subtext">{subtextHint}</p>
         )}
 
-        {/* Dropped / Linked Cards Pill */}
-        <div className="box-dropped-cards">
-          {boardCards.filter(c => c.box === boxKey).map(c => (
-            <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-              {c.title}
-            </span>
-          ))}
-        </div>
+        {/* Dropped / Linked Cards Pill (if any) */}
+        {boardCards && boardCards.filter(c => c.box === boxKey).length > 0 && (
+          <div className="box-dropped-cards">
+            {boardCards.filter(c => c.box === boxKey).map(c => (
+              <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
+                {c.title}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -486,10 +597,10 @@ export default function CanvasApp({ t }) {
             {isLoading ? <Sparkles size={13} className="spin-pulse" /> : <Grid size={13} />}
             <span>
               {isLoading
-                ? `Gemini drafting ${revealedCount} of 9…`
+                ? `Drafting ${revealedCount} of 9…`
                 : isGenerated
-                ? `Gemini AI · Draft #${draftCount + 1} ready`
-                : "Lean canvas · empty"}
+                ? `Lean Canvas · Draft #${draftCount + 1} ready`
+                : "Lean Canvas · empty"}
             </span>
           </span>
         </div>
@@ -562,7 +673,7 @@ export default function CanvasApp({ t }) {
               <div className="textarea-header-label">
                 <span>Describe your startup or product idea</span>
                 <span className="ai-badge-sub">
-                  {draftCount > 0 ? `Draft #${draftCount + 1}` : "Gemini AI"}
+                  {draftCount > 0 ? `Draft #${draftCount + 1}` : "AI Assist"}
                 </span>
               </div>
               <textarea
@@ -610,10 +721,10 @@ export default function CanvasApp({ t }) {
             >
               <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
               {isLoading
-                ? `Drafting with Gemini (${revealedCount}/9)…`
+                ? `Drafting Canvas (${revealedCount}/9)…`
                 : isGenerated
-                ? `Re-draft with Gemini (Angle #${((draftCount + 1) % 4) + 1})`
-                : "Draft with Gemini"}
+                ? `Re-draft Canvas (Angle #${((draftCount + 1) % 4) + 1})`
+                : "Draft Lean Canvas"}
             </button>
           </div>
         </div>
@@ -625,9 +736,9 @@ export default function CanvasApp({ t }) {
             <div className="callout-sparkle-chip">
               <Sparkles size={14} />
             </div>
-            <div className="callout-title">Draft with Gemini AI</div>
+            <div className="callout-title">Draft Lean Canvas</div>
             <div className="callout-desc">
-              Type your startup idea on the left and click <strong>Draft with Gemini</strong>. All 9 Lean Canvas boxes will be dynamically synthesized!
+              Type your startup idea on the left and click <strong>Draft Lean Canvas</strong>, or click the edit icon on any box to write directly!
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 {
-  "name": "Link Canvas",
-  "details": "Visual canvas, card links, and relationship diagrams for Trello boards",
+  "name": "Lean Canvas",
+  "details": "Dynamic 9-box Lean Canvas generator & studio for Trello boards",
   "html": "powerup.html",
   "author": "Explified",
   "capabilities": [

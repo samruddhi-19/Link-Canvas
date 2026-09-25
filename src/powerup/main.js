@@ -16,7 +16,7 @@ TrelloPowerUp.initialize({
   // Called when Trello prompts authorization
   "show-authorization": function (t) {
     return t.popup({
-      title: "Authorize Link Canvas",
+      title: "Authorize Lean Canvas",
       url: "./auth.html",
       height: 320,
     });
@@ -25,13 +25,13 @@ TrelloPowerUp.initialize({
   // Called when member opens Power-Up settings from the board menu
   "show-settings": function (t) {
     return t.popup({
-      title: "Link Canvas Settings",
+      title: "Lean Canvas Settings",
       url: "./settings.html",
       height: 280,
     });
   },
 
-  // Adds a Link Canvas button in the top board header
+  // Adds a Lean Canvas button in the top board header
   "board-buttons": function () {
     return [
       {
@@ -39,12 +39,12 @@ TrelloPowerUp.initialize({
           dark: ICON_URL,
           light: ICON_URL,
         },
-        text: "Link Canvas",
+        text: "Lean Canvas",
         callback: async function (t) {
           const authorized = await isAuthorized(t);
           if (!authorized) {
             return t.popup({
-              title: "Authorize Link Canvas",
+              title: "Authorize Lean Canvas",
               url: "./auth.html",
               height: 320,
             });
@@ -55,7 +55,7 @@ TrelloPowerUp.initialize({
             url: "./canvas.html",
             accentColor: "#181d22",
             fullscreen: true,
-            title: "Link Canvas",
+            title: "Lean Canvas",
           });
         },
       },
@@ -67,12 +67,12 @@ TrelloPowerUp.initialize({
     return [
       {
         icon: ICON_URL,
-        text: "Link Canvas",
+        text: "Lean Canvas",
         callback: async function (t) {
           const authorized = await isAuthorized(t);
           if (!authorized) {
             return t.popup({
-              title: "Authorize Link Canvas",
+              title: "Authorize Lean Canvas",
               url: "./auth.html",
               height: 320,
             });
@@ -83,7 +83,7 @@ TrelloPowerUp.initialize({
             url: "./canvas.html",
             accentColor: "#181d22",
             fullscreen: true,
-            title: "Link Canvas",
+            title: "Lean Canvas",
           });
         },
       },

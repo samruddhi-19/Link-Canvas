@@ -1055,13 +1055,13 @@ button:active {
 .box-header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin-left: auto;
 }
 
-.btn-box-ai-regen {
-  width: 20px;
-  height: 20px;
+.btn-box-action {
+  width: 22px;
+  height: 22px;
   padding: 0;
   border-radius: 4px;
   background: transparent;
@@ -1071,15 +1071,21 @@ button:active {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.6;
   transition: all 0.15s ease;
 }
 
-.lc-box-item:hover .btn-box-ai-regen {
+.lc-box-item:hover .btn-box-action {
   opacity: 1;
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--lc-text);
+}
+
+.btn-box-edit:hover {
+  background: rgba(87, 157, 255, 0.25) !important;
+  color: #579DFF !important;
+  border-color: rgba(87, 157, 255, 0.4) !important;
 }
 
 .btn-box-ai-regen:hover {
@@ -1090,6 +1096,97 @@ button:active {
 
 .btn-box-ai-regen.spinning svg {
   animation: spin 0.8s linear infinite;
+}
+
+/* Inline Box Editor */
+.lc-box-item.is-editing {
+  border-style: solid !important;
+  border-color: var(--lc-accent) !important;
+  background: #1D2125 !important;
+}
+
+.box-inline-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+  margin-top: 4px;
+}
+
+.box-edit-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 85px;
+  background: #161A1D;
+  border: 1px solid rgba(87, 157, 255, 0.4);
+  border-radius: 6px;
+  padding: 8px;
+  color: #DEE4EA;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.45;
+  resize: none;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(87, 157, 255, 0.15);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.box-edit-textarea:focus {
+  border-color: var(--lc-accent);
+  box-shadow: 0 0 0 2px rgba(87, 157, 255, 0.3);
+}
+
+.box-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-box-save {
+  height: 24px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #579DFF;
+  color: #161A1D;
+  border: none;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-box-save:hover {
+  background: #73ABFF;
+  filter: brightness(1.1);
+}
+
+.btn-box-cancel {
+  height: 24px;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--lc-text-muted);
+  border: 0.5px solid var(--lc-border);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-box-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--lc-text);
+  border-color: var(--lc-border-strong);
 }
 
 /* AI Settings Modal Dialog */
