@@ -270,6 +270,9 @@ export default function CanvasApp({ t }) {
   const [editingBoxKey, setEditingBoxKey] = useState(null);
   const [editingContent, setEditingContent] = useState("");
 
+  // AI Draft Generator Popup Modal State
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+
   // "To Cards" Popup Modal State
   const [isToCardsModalOpen, setIsToCardsModalOpen] = useState(false);
   const [toCardsSourceBox, setToCardsSourceBox] = useState("Solution");
@@ -377,9 +380,10 @@ export default function CanvasApp({ t }) {
         setIsLookPickerOpen(false);
         setEditingBoxKey(null);
         setIsToCardsModalOpen(false);
+        setIsAiModalOpen(false);
       }
     }
-    if (isLookPickerOpen || isToCardsModalOpen) {
+    if (isLookPickerOpen || isToCardsModalOpen || isAiModalOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleKeyDown);
     }
@@ -387,7 +391,7 @@ export default function CanvasApp({ t }) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLookPickerOpen, isToCardsModalOpen]);
+  }, [isLookPickerOpen, isToCardsModalOpen, isAiModalOpen]);
 
   function handleSelectLook(lookKey) {
     setCurrentLook(lookKey);
@@ -558,6 +562,7 @@ export default function CanvasApp({ t }) {
       setLoadingStageText("✨ Assembling 9 Lean Canvas boxes...");
 
       setActiveCanvas(aiResult);
+      setIsAiModalOpen(false);
 
       let count = 0;
       const interval = setInterval(() => {
@@ -760,7 +765,12 @@ export default function CanvasApp({ t }) {
       {/* Top Header */}
       <div className="lc-exact-header">
         <div className="header-left-title">
-          <span className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}>
+          <span
+            className={`header-status-pill ${isLoading ? "drafting" : isGenerated ? "ready" : ""}`}
+            onClick={() => setIsAiModalOpen(true)}
+            style={{ cursor: "pointer" }}
+            title="Click to open AI Draft Studio"
+          >
             {isLoading ? <Sparkles size={13} className="spin-pulse" /> : <Grid size={13} />}
             <span>
               {isLoading
@@ -773,6 +783,16 @@ export default function CanvasApp({ t }) {
         </div>
 
         <div className="header-right-tools" ref={lookPickerRef} style={{ position: "relative" }}>
+          {/* AI Draft / Re-draft Studio Trigger Button */}
+          <button
+            className={`btn-header-ai-draft ${isGenerated ? "is-redraft" : "is-primary-glow"}`}
+            onClick={() => setIsAiModalOpen(true)}
+            title="Draft Lean Canvas with Gemini AI"
+          >
+            <Sparkles size={13} className={isLoading ? "spin-pulse" : ""} />
+            <span>{isLoading ? "Drafting..." : isGenerated ? `Re-draft (#${draftCount + 1})` : "Draft with AI"}</span>
+          </button>
+
           <button className="btn-header-reset" onClick={handleReset}>
             {isGenerated ? "Clear Canvas" : "Reset"}
           </button>
@@ -831,81 +851,27 @@ export default function CanvasApp({ t }) {
         </div>
       </div>
 
-      {/* Main Grid: Left Sidebar + 9-Box Matrix */}
+      {/* Main Layout: 100% Full-Area 9-Box Matrix */}
       <div className="lc-exact-main-grid">
-        {/* Left Sidebar (Dedicated Gemini AI Drafting) */}
-        <div className="lc-exact-sidebar">
-          <div className="tab-ai-draft-content">
-            <div className={`ai-draft-textarea-box ${promptError ? "has-error" : ""}`}>
-              <div className="textarea-header-label">
-                <span>Describe your startup or product idea</span>
-                <span className="ai-badge-sub">
-                  {draftCount > 0 ? `Draft #${draftCount + 1}` : "AI Assist"}
-                </span>
-              </div>
-              <textarea
-                value={ideaPrompt}
-                onChange={(e) => {
-                  setIdeaPrompt(e.target.value);
-                  if (promptError) setPromptError("");
-                }}
-                placeholder="e.g. AI-powered micro-accounting for freelance developers that auto-generates tax-ready deductions..."
-                rows={4}
-              />
-              {promptError && (
-                <div className="ai-prompt-error-msg">{promptError}</div>
-              )}
-            </div>
-
-            <div className="ai-section-subhead">Quick inspiration</div>
-            <div className="ai-draft-chips-col">
-              {INSPIRATION_IDEAS.map((item) => {
-                const ChipIcon = item.icon || Rocket;
-                return (
-                  <div
-                    key={item.key}
-                    className={`ai-draft-chip ${activeChipKey === item.key ? "active" : ""}`}
-                    onClick={() => handleSelectChip(item)}
-                  >
-                    <span className="chip-icon"><ChipIcon size={14} /></span>
-                    <span>{item.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {isLoading && loadingStageText && (
-              <div className="ai-generation-stage-bar">
-                <div className="stage-spinner"></div>
-                <span>{loadingStageText}</span>
-              </div>
-            )}
-
-            <button
-              className={`btn-generate-canvas-exact ${!isGenerated ? "is-primary" : "is-outline"} ${isLoading ? "is-loading" : ""}`}
-              onClick={handleGenerateCanvas}
-              disabled={isLoading}
-            >
-              <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
-              {isLoading
-                ? `Drafting Canvas (${revealedCount}/9)…`
-                : isGenerated
-                ? `Re-draft Canvas (Angle #${((draftCount + 1) % 4) + 1})`
-                : "Draft Lean Canvas"}
-            </button>
-          </div>
-        </div>
-
-        {/* Right 10-Column 9-Box Matrix */}
         <div className="lc-exact-canvas-board">
-          {/* Empty state callout centered over the canvas */}
-          <div className={`canvas-empty-callout ${isGenerated || isLoading ? "fade-out" : ""}`}>
+          {/* Centered Interactive Empty State Callout */}
+          <div
+            className={`canvas-empty-callout ${isGenerated || isLoading ? "fade-out" : ""}`}
+            onClick={() => setIsAiModalOpen(true)}
+            role="button"
+            tabIndex={0}
+            title="Click to describe startup idea and generate with Gemini"
+          >
             <div className="callout-sparkle-chip">
-              <Sparkles size={14} />
+              <Sparkles size={20} />
             </div>
-            <div className="callout-title">Draft Lean Canvas</div>
+            <div className="callout-title">Draft Lean Canvas with Gemini</div>
             <div className="callout-desc">
-              Type your startup idea on the left and click <strong>Draft Lean Canvas</strong>, or click the edit icon on any box to write directly!
+              Click here to describe your startup idea and instantly synthesize all 9 blocks with AI.
+            </div>
+            <div className="callout-action-pill">
+              <Sparkles size={13} />
+              <span>Describe Idea & Generate →</span>
             </div>
           </div>
 
@@ -937,6 +903,116 @@ export default function CanvasApp({ t }) {
           {renderBox("Revenue streams", 6, 6, "span-revenue", "icon-badge-revenue", Banknote, "Revenue streams", activeCanvas.revenueStreams, "Pricing and monetization")}
         </div>
       </div>
+
+      {/* "Draft with AI / Gemini" Modal Popup */}
+      {isAiModalOpen && (
+        <div className="lc-modal-overlay" onClick={() => !isLoading && setIsAiModalOpen(false)}>
+          <div className="lc-ai-modal-card" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="ai-modal-header">
+              <div className="ai-modal-title-wrap">
+                <div className="ai-modal-icon-badge">
+                  <Sparkles size={16} />
+                </div>
+                <div>
+                  <div className="ai-modal-title-row">
+                    <h3>Draft Lean Canvas with Gemini AI</h3>
+                  </div>
+                  <p className="ai-modal-subtext">
+                    Describe your product idea to synthesize all 9 strategic blocks in seconds.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-modal-close"
+                onClick={() => !isLoading && setIsAiModalOpen(false)}
+                title="Close"
+                disabled={isLoading}
+              >
+                <XIcon size={13} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="ai-modal-body">
+              <div className="ai-modal-input-group">
+                <div className="ai-modal-input-label-row">
+                  <span className="ai-modal-input-label">Describe your startup or product idea</span>
+                  <span className="ai-modal-badge-tag">
+                    {draftCount > 0 ? `Draft #${draftCount + 1}` : "Gemini 2.0"}
+                  </span>
+                </div>
+                <textarea
+                  className={`ai-modal-textarea ${promptError ? "has-error" : ""}`}
+                  value={ideaPrompt}
+                  onChange={(e) => {
+                    setIdeaPrompt(e.target.value);
+                    if (promptError) setPromptError("");
+                  }}
+                  placeholder="e.g. Instant flavored clean plant nutrition sattu drink for busy urban professionals with single-serve micro-sachets..."
+                  rows={4}
+                  autoFocus
+                />
+                {promptError && (
+                  <div className="ai-prompt-error-msg">{promptError}</div>
+                )}
+              </div>
+
+              <div className="ai-modal-section-title">Quick inspiration</div>
+              <div className="ai-chips-grid">
+                {INSPIRATION_IDEAS.map((item) => {
+                  const ChipIcon = item.icon || Rocket;
+                  return (
+                    <div
+                      key={item.key}
+                      className={`ai-chip-card ${activeChipKey === item.key ? "active" : ""}`}
+                      onClick={() => handleSelectChip(item)}
+                    >
+                      <span className="chip-icon"><ChipIcon size={14} /></span>
+                      <span>{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {isLoading && loadingStageText && (
+                <div className="ai-generation-stage-bar">
+                  <div className="stage-spinner"></div>
+                  <span>{loadingStageText}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="ai-modal-footer">
+              <button
+                type="button"
+                className="btn-ai-modal-cancel"
+                onClick={() => setIsAiModalOpen(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-ai-modal-submit"
+                onClick={handleGenerateCanvas}
+                disabled={isLoading || !ideaPrompt.trim()}
+              >
+                <Sparkles size={14} className={isLoading ? "spin-pulse" : ""} />
+                <span>
+                  {isLoading
+                    ? `Drafting Canvas (${revealedCount}/9)…`
+                    : isGenerated
+                    ? `Re-draft Canvas (Angle #${((draftCount + 1) % 4) + 1})`
+                    : "Generate Lean Canvas"}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* "To Cards" Modal Popup */}
       {isToCardsModalOpen && (
