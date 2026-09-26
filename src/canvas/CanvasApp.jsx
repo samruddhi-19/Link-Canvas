@@ -745,33 +745,9 @@ export default function CanvasApp({ t }) {
                 <li>{content}</li>
               )}
             </ul>
-            {boxKey === "Solution" && (
-              <button
-                type="button"
-                className="btn-solution-to-cards-bottom"
-                onClick={(e) => handleOpenToCards(e, "Solution")}
-                title="Insert Solutions into Trello List"
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                </svg>
-                <span>To Cards: Select & Insert into List</span>
-              </button>
-            )}
           </div>
         ) : (
           <p className="box-item-subtext">{subtextHint}</p>
-        )}
-
-        {/* Dropped / Linked Cards Pill (if any) */}
-        {boardCards && boardCards.filter(c => c.box === boxKey).length > 0 && (
-          <div className="box-dropped-cards">
-            {boardCards.filter(c => c.box === boxKey).map(c => (
-              <span key={c.id} className="dropped-card-blue-pill" title={c.title}>
-                {c.title}
-              </span>
-            ))}
-          </div>
         )}
       </div>
     );
